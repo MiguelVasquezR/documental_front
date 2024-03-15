@@ -7,6 +7,10 @@ import PeliculaView from '../view/Pelicula/PeliculaView.jsx';
 import AgregarPelicula from '../view/AgregarPelicula/AgregarPelicula.jsx';
 import EditarPelicula from '../view/EditarPelicula/EditarPelicula.jsx';
 
+import Texto from '../view/Texto/Texto.jsx';
+import AgregarTexto from '../view/Texto/AgregarTexto.jsx';
+import EditarTexto from '../view/Texto/EditarTexto.jsx';
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -19,6 +23,18 @@ const router = createBrowserRouter([
     {
         path: "/ver",
         element: <Informacion />
+    },
+    {
+        path: "/texto",
+        element: <Texto />      
+    },
+    {
+        path: "/texto/agregar",
+        element: <AgregarTexto />
+    },
+    {
+        path: "/texto/editar",
+        element: <EditarTexto />
     },
     {
         path: "/pelicula",

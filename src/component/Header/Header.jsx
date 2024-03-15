@@ -38,7 +38,7 @@ const Header = () => {
                         <Link to={"/devoluciones"}>Devoluciones</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
-                        <Link to={"/libro"}>Libro</Link>
+                        <Link to={"/texto"}>Libro</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
                         <Link to={"/pelicula"}>Película</Link>
