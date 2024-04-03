@@ -1,4 +1,4 @@
-import { React } from 'react';
+import { React, useEffect, useState } from 'react';
 
 import Back from '../../images/ArrowLeft';
 
@@ -6,48 +6,76 @@ import Header from '../../component/Header/Header';
 import Ubicacion from '../../component/Ubicacion/Ubicacion';
 
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Cargando from '../../component/Loaders/CargandoLibro/Cargando';
 
-const Información = ({img, titulo, autor, editorial, cantidad, codigo, genero, resena, ubicacion}) => {
+const Información = () => {
     const navigate = useNavigate();
+    const searchParams = new URLSearchParams(location.search);
+    const id = searchParams.get('id');
+    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState({});
 
     const goBack = () => {
-        navigate(-1);    
+        navigate(-1);
     }
+
+    useEffect(() => {
+
+        axios.get(`http://localhost:4567/texto/visualizar?id=${id}`)
+            .then((res) => {
+                setData(res.data);
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, []);
 
     return (
         <>
-            <Header />
-            <div onClick={goBack} className='px-4 py-8 '>
-                <Back w={24} />
-            </div>
 
-            <section className=' flex flex-col justify-center items-center gap-3 mx-auto w-[90%]'>
 
-                <div>
-                    <picture>
-                        {img ? <img src={img} /> : <div className='w-[100px] h-[150px] my-2 rounded-md bg-[#f2f2f2]'></div>}
-                    </picture>
-                    <article className='text-center'>
-                        <h2 className='text-2xl' >{titulo ? titulo : "Titulo"}</h2>
-                        <h2 className='text-lg' >{autor ? autor : "Autor"}</h2>
-                        <h2 className='text-lg' >{editorial ? editorial : "Editorial"}</h2>
-                        <h2 className='text-md' >{cantidad ? cantidad : "Cantidad"}</h2>
-                        <h2 className='text-md' >{codigo ? codigo : "Código"}</h2>
-                        <h2 className='text-md' >{genero ? genero : "Género"}</h2>
-                    </article>
-                </div>
+            {
+                isLoading ?
+                    <Cargando />
+                    :
+                    <>
+                        <Header />
 
-                <article>
-                    <h2 className='text-xl font-bold'>Reseña</h2>
-                    <h2>{resena ? resena : "No se ha encontrado la reseña"}</h2>
-                </article>
-            
-            
-            </section>            
+                        <div onClick={goBack} className='px-4 py-8 cursor-pointer'>
+                            <Back w={24} />
+                        </div>
+
+                        <section className=' flex flex-col justify-center items-center gap-5 mx-auto w-[90%]'>
+
+                            <div className='shadow-md flex flex-row justify-center items-center gap-5 rounded-md text-center'>
+                                <picture><img src={`http://localhost:5678/images/${data?.LinkFoto}`} className="rounded-md" /></picture>
+                                <article className='flex flex-col gap-1 pb-1'>
+                                    <h2 className='font-bold text-2xl'>{data?.Titulo}</h2>
+                                    <h2 className='text-sm'>{data?.Codigo}</h2>
+                                    <h2 className='text-sm'>{data?.Nombre} {data?.Paterno} {data?.Materno}</h2>
+                                    <h2 className='text-sm'>{data?.Tipo}</h2>
+                                    <h2 className='text-sm'>{data?.Disponibilidad}</h2>
+                                    <h2 className='text-sm'>{"Cantidad"}</h2>
+                                </article>
+                            </div>
+
+                            <article className='text-justify py-5'>
+                                <h2 className='text-xl font-bold'>Reseña</h2>
+                                <p className='leading-7'>{data?.Resena}</p>
+                            </article>
+
+                        </section>
+
+                    </>
+            }
 
 
         </>
     )
 }
+
+
 
 export default Información;

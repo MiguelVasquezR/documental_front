@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 const MyGrid = ({row, col, size}) => {
   const selectedCell = {col: col-1, row: row-1}
   
-  console.log(size);
-  
   return (
     <div className="flex flex-col gap-2 flex-nowrap w-[90%] mx-auto my-5">
       {Array.from({ length: `${size}` }).map((_, rowIndex) => (

@@ -11,6 +11,12 @@ import Texto from '../view/Texto/Texto.jsx';
 import AgregarTexto from '../view/Texto/AgregarTexto.jsx';
 import EditarTexto from '../view/Texto/EditarTexto.jsx';
 
+import PrestamoView from '../view/Prestamo/PrestamoView.jsx';
+
+import AgregarEstudiante from '../view/Prestamo/AgregarEstudiante.jsx';
+import Devolucion from '../view/Prestamo/Devolucion.jsx';
+import Videoteca from '../view/Videoteca/Videoteca.jsx';
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -19,6 +25,10 @@ const router = createBrowserRouter([
     {
         path: "/biblioteca",
         element: <BibliotecaView />,
+    },
+    {
+        path: "/videoteca",
+        element: <Videoteca />,
     },
     {
         path: "/ver",
@@ -47,6 +57,18 @@ const router = createBrowserRouter([
     {
         path: "/pelicula/editar",
         element: <EditarPelicula />,
+    },
+    {
+        path: "/prestamo",
+        element: <PrestamoView />
+    },
+    {
+        path: "/agregar-estudiante",
+        element: <AgregarEstudiante />
+    },
+    {
+        path: "/devolucion",
+        element: <Devolucion />
     }
 ]);
 

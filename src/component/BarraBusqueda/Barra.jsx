@@ -2,12 +2,15 @@ import {React, useState} from 'react'
 
 import Lupa from '../../images/Lupa.jsx'
 
-const Barra = () => {
+const Barra = ({}) => {
     const [search, setSearch] = useState('');
 
     const handleSearch = (e) => {
-        alert('Buscando: ' + search);
+        e.preventDefault();
+        setSearch(e.target.value);
     }
+
+
 
     const handleKeyPress = (e) => {
         setSearch(e.target.value);

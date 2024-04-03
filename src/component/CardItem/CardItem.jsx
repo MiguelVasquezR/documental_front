@@ -1,25 +1,22 @@
 import { React } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
-import img from '../../images/qj.jpeg'
-
-const CardItem = (data) => {
+const CardItem = (libro) => {
     const navigate = useNavigate();
 
     const seeBook = () => {                
-        navigate(`/ver`);
+        navigate(`/ver?id=${libro.libro.ID}`);
     }
 
     return (
-        <div onClick={seeBook} className='bg-primary w-[90%] max-w-[600px] h-[150px] rounded-xl mx-auto flex flex-row justify-evenly items-center text-secondary-a my-5'>
-            <picture className='h-[90%] border-secondary-a border-2'>
-                <img src={img} className="h-[100%] object-cover"/>
+        <div onClick={seeBook} className='bg-primary w-[90%] max-w-[600px] h-[150px] rounded-xl mx-auto flex flex-row justify-evenly items-center text-secondary-a my-5 animate-slideInUp'>
+            <picture className='w-[100px] h-[90%] border-secondary-a border-2'>
+                <img src={`http://localhost:5678/images/${libro.libro.LinkFoto}`} className="h-[100%] w-screen object-cover"/>
             </picture>
 
             <div className='w-48 text-center'>
-                <h2 className='text-lg'>Don Quijote de la mancha</h2>
-                <h2 className='text-sm my-1' >Miguel De Cervantes</h2>
-                <h3 className='text-sm my-1' >Novela Española</h3>
+                <h2 className='text-lg'>{libro.libro.Titulo}</h2>
+                <h2 className='text-sm my-1' >{libro.libro.Nombre +" "+ libro.libro.Paterno +" "+ libro.libro.Materno}</h2>
             </div>
         </div>
     )

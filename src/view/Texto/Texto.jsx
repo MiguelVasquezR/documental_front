@@ -1,36 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import Header from '../../component/Header/Header';
 
 
-const libros = [
-    {
-        titulo: "El Señor de los Anillos",
-        autor: "J.R.R. Tolkien",
-        codigo: "001",
-        cantidad: 4
-    },
-    {
-        titulo: "La Odisea",
-        autor: "Homero",
-        codigo: "002",
-        cantidad: 4
-    },
-    {
-        titulo: "El Principito",
-        autor: "Antoine de Saint-Exupéry",
-        codigo: "003",
-        cantidad: 4
-    }
-]
-
-
 const Texto = () => {
+    const [libros, setLibros] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:4567/texto/informacion-tabla')
+            .then((res) => {
+                setLibros(res.data);
+                console.log(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, []);
+
     return (
         <>
             <Header />
-            <body>
+            <section>
                 <Link to={"/texto/agregar"} className='bg-primary text-secondary-a px-4 py-2 rounded-md m-4 inline-block'>
                     Crear Libro
                 </Link>
@@ -43,14 +35,13 @@ const Texto = () => {
                 </form>
 
                 <h2 className='ml-4 my-4 text-lg'>Lista Textos</h2>
-                <table className='max-w-[600px] w-[90%] block mx-auto mb-8'>
 
-                    <thead className=' w-[100%] flex justify-center items-center'>
-                        <tr className='w-[100%] border-[1px] border-[#c3c3c3] border-solid flex'>
-                            <th className='w-[20%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Código</th>
-                            <th className='w-[30%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Titulo</th>
-                            <th className='w-[30%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Autor</th>
-                            <th className='w-[20%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Cant.</th>
+                <table className='w-[90%] mx-auto'>
+                    <thead>
+                        <tr>
+                            <th className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Código</th>
+                            <th className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Titulo</th>
+                            <th className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Autor</th>
                         </tr>
                     </thead>
 
@@ -59,10 +50,9 @@ const Texto = () => {
                             libros.map((libro, index) => {
                                 return (
                                     <tr key={index} className='my-[1px]'>
-                                        <td className='w-[20%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.codigo}</td>
-                                        <td className='w-[30%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.titulo}</td>
-                                        <td className='w-[30%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.autor}</td>
-                                        <th className='w-[20%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.cantidad}</th>
+                                        <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Codigo}</td>
+                                        <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Titulo}</td>
+                                        <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Nombre + " " + libro.Paterno + " " + libro?.Materno}</td>
                                     </tr>
                                 );
                             })
@@ -70,8 +60,7 @@ const Texto = () => {
                     </tbody>
                 </table>
 
-
-            </body>
+            </section>
 
         </>
     )

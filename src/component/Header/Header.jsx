@@ -35,10 +35,10 @@ const Header = () => {
                         <Link to={"/prestamo"}>Prestamo</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
-                        <Link to={"/devoluciones"}>Devoluciones</Link>
+                        <Link to={"/devolucion"}>Devoluciones</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
-                        <Link to={"/texto"}>Libro</Link>
+                        <Link to={"/texto"}>Libros</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
                         <Link to={"/pelicula"}>Película</Link>
