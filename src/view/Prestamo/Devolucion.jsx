@@ -1,27 +1,110 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 import Header from "../../component/Header/Header";
 
 const Devolucion = () => {
 
-    
+    const [estudiante, setEstudiante] = useState(null);
+    const [libro, setLibro] = useState(null);
+    const [prestamo, setPrestamo] = useState(null);
+    const [codigo, setCodigo] = useState("");
+
+    const obtenerPrestamo = (e) => {
+        e.preventDefault();
+        axios.post(`http://${import.meta.env.VITE_IP}/prestamo/devolver?codigo=${codigo}`)
+            .then((res) => {
+                setPrestamo(res.data);
+                console.log(res.data);
+            })
+            .catch((err) => { console.log(err) })
+    }
+
+    useEffect(() => {
+        if (prestamo === null) return;
+        axios.get(`http://${import.meta.env.VITE_IP}/estudiante/id?id=${prestamo?.IDEstudiante}`)
+            .then((res) => {
+                setEstudiante(res.data);
+            })
+            .catch((err) => { console.log(err) })
+
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/codigo?codigo=${codigo}`)
+            .then((res) => {
+                setLibro(res.data);
+            })
+            .catch((err) => { console.log(err); })
+
+    }, [prestamo]);
+
+    const confirmarDevolucion = () => {
+        axios.put(`http://${import.meta.env.VITE_IP}/prestamo/confirmar-devolucion?id=${prestamo.ID}`)
+            .then((res) => {
+                console.log(res.data.mensaje);
+            })
+            .catch((err) => { console.log(err); })
+    }
+
+
 
     return (
         <>
             <Header />
 
-            <section>
-                <h2>Devolución</h2>
+            <section className="flex flex-col justify-center items-center gap-5">
+                <h2 className="font-bold text-2xl my-2">Devolución</h2>
 
-                <form action="" className="w-[90%] flex flex-col justify-center items-center gap-5">
-                    <input className="border-b-[1px] border-[#000] border-solid p-1 w-[80%] text-center" type="text" placeholder="Ingresa código del libro" />
-                    <button className="bg-primary px-4 py-2 rounded-md text-secondary-a" type="submit">Búscar</button>
+                <form action="" className="w-[90%] flex flex-col justify-center items-center gap-5 mx-auto">
+                    <input value={codigo} onChange={(e) => { setCodigo(e.target.value) }} className="outline-none border-b-[1px] border-[#000] border-solid p-1 w-[80%] text-center" type="text" placeholder="Ingresa código del libro" />
+                    <button onClick={obtenerPrestamo} className="bg-primary px-4 py-2 rounded-md text-secondary-a" type="submit">Búscar</button>
                 </form>
 
+                {
+                    estudiante !== null ?
+                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight">
+                            <h2 className="my-2 font-bold text-xl">Información del Estudiante</h2>
+                            <article className="flex flex-col justify-center items-center gap-2">
+                                <h3>Nombre: {estudiante?.Nombre + " " + estudiante?.Paterno + " " + estudiante?.Materno}</h3>
+                                <h3>Correo: {estudiante?.Correo}</h3>
+                                <h3>Teléfono: {estudiante?.Telefono}</h3>
+                            </article>
+                        </section>
+                        :
+                        ""
+
+                }
+
+                {
+                    libro !== null ?
+                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight">
+                            <h2 className="font-bold text-xl my-2">Información del Libro</h2>
+
+                            <article className="flex flex-row justify-center items-center gap-2">
+                                <picture>
+                                    <img src={`${libro.LinkFoto}`} className="bg-blue-500 w-[100px] h-[120px] rounded-md" />
+                                </picture>
+                                <div className="flex flex-col justify-center items-center gap-2 text-center">
+                                    <h3>Titulo: {libro.Titulo}</h3>
+                                    <h3>Código: {libro.Codigo}</h3>
+                                    <h3>Autor: {libro?.Nombre + " " + libro?.Paterno + " " + libro?.Materno}</h3>
+                                </div>
+                            </article>
+
+                        </section>
+                        :
+                        ""
+
+                }
+
+                {
+                    libro && estudiante ?
+                    <button onClick={confirmarDevolucion} className="my-5 bg-primary px-2 py-4 text-secondary-a rounded-md animate-slideInRight">Aceptar Devolución</button>
+                    :
+                    ""
+                }
 
             </section>
-        
-        
+
+
         </>
     )
 }

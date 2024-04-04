@@ -22,7 +22,7 @@ const BibliotecaView = () => {
 
 
   useEffect(() => {
-    axios.get('http://localhost:4567/texto/biblioteca')
+    axios.get(`http://${import.meta.env.VITE_IP}/texto/biblioteca`)
       .then((res) => {
         console.log(res);
         setLibros(res.data);

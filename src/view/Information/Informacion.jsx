@@ -22,7 +22,7 @@ const Información = () => {
 
     useEffect(() => {
 
-        axios.get(`http://localhost:4567/texto/visualizar?id=${id}`)
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
             .then((res) => {
                 setData(res.data);
                 setIsLoading(false);
@@ -50,7 +50,7 @@ const Información = () => {
                         <section className=' flex flex-col justify-center items-center gap-5 mx-auto w-[90%]'>
 
                             <div className='shadow-md flex flex-row justify-center items-center gap-5 rounded-md text-center'>
-                                <picture><img src={`http://localhost:5678/images/${data?.LinkFoto}`} className="rounded-md" /></picture>
+                                <picture><img src={`${data?.LinkFoto}`} className="rounded-md" /></picture>
                                 <article className='flex flex-col gap-1 pb-1'>
                                     <h2 className='font-bold text-2xl'>{data?.Titulo}</h2>
                                     <h2 className='text-sm'>{data?.Codigo}</h2>

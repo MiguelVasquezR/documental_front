@@ -16,7 +16,7 @@ const App = () => {
     const [prestamo, setPrestamo] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:4567/prestamo/listar')
+        axios.get(`http://${import.meta.env.VITE_IP}/prestamo/listar`)
             .then((res) => {
                 setPrestamo(res.data);
             })
@@ -32,7 +32,7 @@ const App = () => {
         const [t, setT] = useState(null);
 
         useEffect(() => {
-            axios.get(`http://localhost:4567/estudiante/id?id=${p.IDEstudiante}`)
+            axios.get(`http://${import.meta.env.VITE_IP}/estudiante/id?id=${p.IDEstudiante}`)
                 .then((res) => {
                     setE(res.data);
                 })
@@ -40,7 +40,7 @@ const App = () => {
                     console.log(err)
                 })
 
-            axios.get(`http://localhost:4567/texto/prestamo?id=${p.IDTexto}`)
+            axios.get(`http://${import.meta.env.VITE_IP}/texto/prestamo?id=${p.IDTexto}`)
                 .then((res) => {
                     setT(res.data);
                 })
@@ -55,7 +55,7 @@ const App = () => {
             <div className='w-[90%] h-[150px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
 
                 <picture>
-                    <img src={`http://localhost:5678/images/${t?.LinkFoto}`} className='object-cover rounded-md h-[120px] w-[100px]' />
+                    <img src={`${t?.LinkFoto}`} className='object-cover rounded-md h-[120px] w-[100px]' />
                 </picture>
 
                 <article className='text-center'>
@@ -77,7 +77,12 @@ const App = () => {
                 <h2 className='p-4' >Próximas Devoluciones</h2>
                 {
                     prestamo.map((p, index) => {
-                        return <CardPrestamo key={index} p={p} />
+                        if (p.Estado !== "Devuelto"){
+                            return <CardPrestamo key={index} p={p} />
+                        }else{
+                            return ""
+                        }
+                        
                     })
                 }
             </section>

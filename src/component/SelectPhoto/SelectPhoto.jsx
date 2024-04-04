@@ -1,11 +1,11 @@
 import { React } from 'react';
 import { useState, useRef } from "react";
+
 import appFirebase from '../../hooks/AppFirebase'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 const storage = getStorage(appFirebase);
 
 import BotonCargando from '../Loaders/BotonCargando/BotonCargando.jsx';
-
 
 const SelectPhoto = () => {
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ const SelectPhoto = () => {
     setImageUrl(ulrImDesc)
     setText("Cargado");
     
-    window.localStorage.setItem('portada', ulrImDesc);
+    console.log("Se ha terminado");
 
   }
 

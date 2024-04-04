@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Ubicacion from '../Ubicacion/Ubicacion';
 
+
 const FormUbicacion = ({ handleGetLocation }) => {
     const [repisa, setRepisa] = useState('');
     const [fila, setFila] = useState('');

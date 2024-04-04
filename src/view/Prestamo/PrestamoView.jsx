@@ -36,7 +36,7 @@ const PrestamoView = () => {
             IDEstudiante: estudiante.ID
         }
 
-        axios.post('http://localhost:4567/prestamo/crear', data)
+        axios.post(`http://${import.meta.env.VITE_IP}/prestamo/crear`, data)
             .then((res) => {
                 console.log(res.data.mensaje);
                 navigate("/")
@@ -47,7 +47,7 @@ const PrestamoView = () => {
 
     const obtenerEstudiante = (e) => {
         e.preventDefault();
-        axios.get(`http://localhost:4567/estudiante/matricula?matricula=${matricula}`)
+        axios.get(`http://${import.meta.env.VITE_IP}/estudiante/matricula?matricula=${matricula}`)
             .then((res) => {
                 setEstudiante(res.data);
                 setPaso(2);
@@ -58,7 +58,7 @@ const PrestamoView = () => {
     const obtenerLibro = (e) => {
         e.preventDefault();
 
-        axios.get(`http://localhost:4567/texto/codigo?codigo=${codigo}`)
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/codigo?codigo=${codigo}`)
             .then((res) => {
                 console.log(res.data);
                 setLibro(res.data);

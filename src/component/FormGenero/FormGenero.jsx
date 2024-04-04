@@ -16,8 +16,8 @@ const FormGenero = () => {
     };
 
     return (
-        <form className='w-[90%] my-5 mx-auto flex flex-col justify-center gap-2'>
-            <legend className='text-left text-lg font-bold'>Género</legend>
+        <fieldset>
+            <legend className='font-bold text-xl'>Género</legend>
             {generos.map((genero, index) => (
                 <input
                     key={index}
@@ -31,7 +31,7 @@ const FormGenero = () => {
             <div className='w-[50px] mx-auto' onClick={handleAddGenero}>
                 <Plus color={'black'} w={50} />
             </div>
-        </form>
+        </fieldset>
     )
 }
 

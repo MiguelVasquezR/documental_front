@@ -1,75 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import Header from '../../component/Header/Header';
+import axios from 'axios';
 
-import Editar from '../../images/Editar';
-import Delete from '../../images/Delete';
+import ip from '../../dir'
 
 const PeliculaView = () => {
 
     const [selected, setSelected] = useState({});
+    const [peliculas, setPeliculas] = useState([])
 
-    const handleEditarLibro = (libro) => {
-        console.log(libro);
-    }
+    useEffect(() => {
+        axios.get(`http://${import.meta.env.VITE_IP}/pelicula/listar`)
+            .then((res) => {
+                console.log(res.data);
+                setPeliculas(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, [])
 
-    const handleEliminarLibro = (libro) => {
-        console.log(libro);
-    }
 
-    const libros = [
-        {
-            codigo: 1,
-            titulo: 'El principito',
-            autor: 'Antoine de Saint-Exupéry'
-        },
-        {
-            codigo: 2,
-            titulo: 'El señor de los anillos',
-            autor: 'J.R.R. Tolkien'
-        },
-        {
-            codigo: 3,
-            titulo: 'Harry Potter',
-            autor: 'J.K. Rowling'
-        },
-        {
-            codigo: 4,
-            titulo: 'Cien años de soledad',
-            autor: 'Gabriel García Márquez'
-        },
-        {
-            codigo: 5,
-            titulo: 'Don Quijote de la Mancha',
-            autor: 'Miguel de Cervantes'
-        },
-        {
-            codigo: 6,
-            titulo: 'La Odisea',
-            autor: 'Homero'
-        },
-        {
-            codigo: 7,
-            titulo: 'La Iliada',
-            autor: 'Homero'
-        },
-        {
-            codigo: 8,
-            titulo: 'La Divina Comedia',
-            autor: 'Dante Alighieri'
-        },
-        {
-            codigo: 9,
-            titulo: 'El retrato de Dorian Gray',
-            autor: 'Oscar Wilde'
-        },
-        {
-            codigo: 10,
-            titulo: 'El amor en los tiempos del cólera',
-            autor: 'Gabriel García Márquez'
-        }
-    ];
 
     return (
         <>
@@ -93,23 +45,17 @@ const PeliculaView = () => {
                     </tr>
                 </thead>
                 <tbody className='w-[100%]'>
-                    {libros.map((libro, index) => (
-                        <tr key={index}>
-                            <td className='w-[20%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.codigo}</td>
-                            <td className='w-[40%] md:w-[25%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.titulo}</td>
-                            <td className='w-[40%] md:w-[25%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.autor}</td>
-                            <td className='hidden md:table-cell md:w-[15%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>
-                                <div className="md:flex md:items-center md:justify-center" onClick={()=>handleEditarLibro(libro)}>
-                                    <Editar w={30} />
-                                </div>
-                            </td>
-                            <td className='hidden md:table-cell md:w-[15%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>
-                                <div className="md:flex md:items-center md:justify-center" onClick={()=>handleEliminarLibro(libro)}>
-                                    <Delete w={25} />
-                                </div>
-                            </td>                            
-                        </tr>
-                    ))}
+                    {
+                        peliculas.map((pelicula, index) => {
+                            return (
+                                <tr key={index} className='text-center'>
+                                    <td>{pelicula.Codigo}</td>
+                                    <td>{pelicula.Titulo}</td>
+                                    <td>{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</td>
+                                </tr>
+                            )
+                        }).reverse()
+                    }
                 </tbody>
             </table>
         </>

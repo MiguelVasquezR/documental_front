@@ -9,7 +9,7 @@ const Texto = () => {
     const [libros, setLibros] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:4567/texto/informacion-tabla')
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/informacion-tabla`)
             .then((res) => {
                 setLibros(res.data);
                 console.log(res.data);

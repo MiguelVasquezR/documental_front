@@ -23,9 +23,7 @@ const AgregarTexto = () => {
 
     const handleSave = async (data) => {
 
-        if (window.localStorage.getItem('portada')) {
-            setDataImage()
-        }
+        await setDataImage(window.localStorage.getItem('portada'));
         
         if (!dataImage || dataImage === undefined) {
             console.log('No se ha ejecutado el handleSave');
@@ -35,19 +33,19 @@ const AgregarTexto = () => {
         setIsLoading(true);
 
         try {
+
             const imageData = {
-                LinkFoto: dataImage.filename,
-                IDFoto: dataImage.id
+                LinkFoto: dataImage
             };
 
-            const { data: { ID: IDFoto } } = await axios.post('http://localhost:4567/foto/crear', imageData);
+            const { data: { ID: IDFoto } } = await axios.post(`http://${import.meta.env.VITE_IP}/foto/crear`, imageData);
 
             const dataAutor = {
                 Nombre: data.Nombre,
                 Paterno: data.Paterno,
                 Materno: data.Materno
             };
-            const { data: { IDAutor } } = await axios.post('http://localhost:4567/autor/crear', dataAutor);
+            const { data: { IDAutor } } = await axios.post(`http://${import.meta.env.VITE_IP}/autor/crear`, dataAutor);
 
             const dataLibro = {
                 Codigo: data.Codigo,
@@ -61,7 +59,7 @@ const AgregarTexto = () => {
                 LinkFoto: IDFoto,
                 Ubicacion: location
             };
-            const { data: { mensaje } } = await axios.post('http://localhost:4567/texto/crear', dataLibro);
+            const { data: { mensaje } } = await axios.post(`http://${import.meta.env.VITE_IP}/texto/crear`, dataLibro);
 
             if (mensaje === "Texto creado") {
                 navigate('/texto');
@@ -71,6 +69,8 @@ const AgregarTexto = () => {
         } catch (error) {
             console.error('Error al ejecutar handleSave:', error);
         }
+
+        window.localStorage.removeItem('portada');
     };
 
     const handleLocation = (repisa, fila, columna) => {
@@ -116,16 +116,13 @@ const AgregarTexto = () => {
 
                 <FormUbicacion handleGetLocation={handleLocation} />
 
-                <button disabled={bloqueado} className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' type='submit'>Guardar</button>
+                <button className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' type='submit'>Guardar</button>
 
                 {
                     isLoading ? <CargandoLibro /> : ""
                 }
 
             </form>
-
-
-
 
         </>
     )
