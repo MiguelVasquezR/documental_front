@@ -116,7 +116,7 @@ const PrestamoView = () => {
 
                             <article className="flex flex-row justify-center items-center gap-2">
                                 <picture>
-                                    <img src={`http://localhost:5678/images/${libro.LinkFoto}`} className="bg-blue-500 w-[100px] h-[120px] rounded-md" />
+                                    <img src={`${libro.LinkFoto}`} className="bg-blue-500 w-[100px] h-[120px] rounded-md" />
                                 </picture>
                                 <div className="flex flex-col justify-center items-center gap-2 text-center">
                                     <h3>Titulo: {libro.Titulo}</h3>

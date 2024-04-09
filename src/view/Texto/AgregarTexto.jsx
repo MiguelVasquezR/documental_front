@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { set, useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import Header from '../../component/Header/Header';
-import SelectPhoto from '../../component/SelectPhoto/SelectPhoto';
 import FormUbicacion from '../../component/FormUbicacion/FormUbicacion';
 import CargandoLibro from '../../component/Loaders/CargandoLibro/Cargando';
 
+import appFirebase from '../../hooks/AppFirebase'
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+const storage = getStorage(appFirebase);
+
+import BotonCargando from '../../component/Loaders/BotonCargando/BotonCargando';
 
 
 
@@ -15,16 +19,32 @@ const AgregarTexto = () => {
     const stylesInputs = "border-b-[1px] w-[90%] p-1";
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
-    const [bloqueado, setBloqueado] = useState(false);
     const [isLoading, setIsLoading] = useState(false)
 
     const [dataImage, setDataImage] = useState();
     const [location, setLocation] = useState({});
 
+    const [loading, setLoading] = useState(false);
+    const [text, setText] = useState("Cargando...");
+    const fileInputRef = useRef(null);
+
+    const handleUploadImage = async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setLoading(true);
+
+        const file = e.target.files[0];
+        const refArchivo = ref(storage, `portadasTextos/${file.name}`)
+        await uploadBytes(refArchivo, file)
+        const ulrImDesc = await getDownloadURL(refArchivo)
+
+        setDataImage(ulrImDesc);
+        setText("Cargado");
+
+    }
+
     const handleSave = async (data) => {
 
-        await setDataImage(window.localStorage.getItem('portada'));
-        
         if (!dataImage || dataImage === undefined) {
             console.log('No se ha ejecutado el handleSave');
             return;
@@ -87,7 +107,17 @@ const AgregarTexto = () => {
     return (
         <>
             <Header />
-            <SelectPhoto />
+            
+
+            <div className='w-[90%] mx-auto my-4 flex flex-row justify-center items-center gap-5'>
+                {dataImage ? <img className='w-[100px] h-[150px] rounded-sm' src={dataImage} /> : <div className='bg-[#f2f2f2] w-[100px] h-[150px] rounded-sm border-solid border-[1px] border-[#000]'></div>}
+                <input name="image" type="file" onChange={handleUploadImage} style={{ display: 'none' }} ref={fileInputRef} />
+                <div className='flex flex-col justify-center items-center gap-3'>
+                    {
+                        loading ? <BotonCargando text={text} /> : <button className='bg-primary text-secondary-a p-2 rounded-md w-[180px]' onClick={(e) => { e.preventDefault(); fileInputRef.current.click() }}>Seleccionar Portada</button>
+                    }
+                </div>
+            </div>
 
             <form onSubmit={handleSubmit(handleSave)} className='w-[90%] mx-auto flex flex-col justify-center items-center gap-4'>
 
@@ -98,7 +128,7 @@ const AgregarTexto = () => {
                     <input {...register("Titulo", { required: true })} type="text" placeholder='Titulo' className={`${stylesInputs}`} />
                     <input {...register("NumPaginas", { required: true })} type="number" placeholder='Número de Páginas' className={`${stylesInputs}`} onInput={(e) => { handleContadorCaracteres(e, 6) }} />
                     <input {...register("Tipo", { required: true })} type="text" placeholder='Tipo' className={`${stylesInputs}`} />
-                    <input {...register("Ano", { required: true})} onInput={(e) => { handleContadorCaracteres(e, 4) }} type="number" placeholder='Año' className={`${stylesInputs}`} />
+                    <input {...register("Ano", { required: true })} onInput={(e) => { handleContadorCaracteres(e, 4) }} type="number" placeholder='Año' className={`${stylesInputs}`} />
                 </fieldset>
 
                 <fieldset className=' flex flex-col justify-center items-center gap-4 w-[90%]'>

@@ -3,11 +3,8 @@ import { Link } from 'react-router-dom';
 import Header from '../../component/Header/Header';
 import axios from 'axios';
 
-import ip from '../../dir'
-
 const PeliculaView = () => {
 
-    const [selected, setSelected] = useState({});
     const [peliculas, setPeliculas] = useState([])
 
     useEffect(() => {
@@ -20,7 +17,6 @@ const PeliculaView = () => {
                 console.log(err);
             })
     }, [])
-
 
 
     return (
@@ -49,12 +45,12 @@ const PeliculaView = () => {
                         peliculas.map((pelicula, index) => {
                             return (
                                 <tr key={index} className='text-center'>
-                                    <td>{pelicula.Codigo}</td>
-                                    <td>{pelicula.Titulo}</td>
-                                    <td>{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</td>
+                                    <td className='border-solid border-[#c2c2c2] border-[1px]' >{pelicula.Codigo}</td>
+                                    <td className='border-solid border-[#c2c2c2] border-[1px]' >{pelicula.Titulo}</td>
+                                    <td className='border-solid border-[#c2c2c2] border-[1px]' >{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</td>
                                 </tr>
                             )
-                        }).reverse()
+                        })
                     }
                 </tbody>
             </table>

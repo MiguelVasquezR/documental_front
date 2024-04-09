@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import Header from "../../component/Header/Header";
+import { useNavigate } from "react-router-dom";
 
 const Devolucion = () => {
 
@@ -9,6 +10,7 @@ const Devolucion = () => {
     const [libro, setLibro] = useState(null);
     const [prestamo, setPrestamo] = useState(null);
     const [codigo, setCodigo] = useState("");
+    const navigate = useNavigate();
 
     const obtenerPrestamo = (e) => {
         e.preventDefault();
@@ -37,9 +39,13 @@ const Devolucion = () => {
     }, [prestamo]);
 
     const confirmarDevolucion = () => {
+        console.log(prestamo.ID);
         axios.put(`http://${import.meta.env.VITE_IP}/prestamo/confirmar-devolucion?id=${prestamo.ID}`)
             .then((res) => {
                 console.log(res.data.mensaje);
+
+                navigate("/")
+                
             })
             .catch((err) => { console.log(err); })
     }
