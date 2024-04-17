@@ -58,7 +58,7 @@ const App = () => {
                     <img src={`${t?.LinkFoto}`} className='object-cover rounded-md h-[120px] w-[100px]' />
                 </picture>
 
-                <article className='text-center'>
+                <article className='text-center w-[50%]'>
                     <p className='text-[12px]'>Titulo: {t?.Titulo}</p>
                     <p className='text-[12px]'>Nombre: {e?.Nombre + " " + e?.Paterno + " " + e?.Materno}</p>
                     <p className='text-[12px]'>Préstamo: {p.fechaPrestamo}</p>

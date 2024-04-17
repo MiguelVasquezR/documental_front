@@ -1,4 +1,4 @@
-import {React, useState} from 'react';
+import { React, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Menu from '../../images/Menu'
@@ -13,20 +13,20 @@ const Header = () => {
         setActive(!active);
     }
 
-    if (active){
+    if (active) {
         return (
-            <div className='bg-primary w-screen h-screen relative flex flex-col justify-center items-center'>
+            <div className='bg-primary h-screen w-screen fixed top-0 left-0 flex flex-col justify-center items-center z-50'>
 
-                <div className='fixed top-8 right-8' onClick={handleClick}>
+                <div className='absolute top-8 right-8' onClick={handleClick}>
                     <Close color={'white'} w={32} />
-                </div>  
+                </div>
 
                 <ul className='text-secondary-a'>
                     <li className='p-4 text-lg font-bold text-center' >
                         <Link to={"/"}>Inicio</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
-                        <Link to={"/biblioteca"}>Biblioteca</Link>                        
+                        <Link to={"/biblioteca"}>Biblioteca</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
                         <Link to={"/videoteca"}>Videoteca</Link>
@@ -55,12 +55,12 @@ const Header = () => {
                 <div onClick={handleClick}>
                     <Menu color={'white'} w={32} />
                 </div>
-            
+
                 <section className='text-secondary-a flex flex-row items-center justify-center'>
-                    <img src={Logo} className='w-[100px]'/>
+                    <img src={Logo} className='w-[100px]' />
                     <h1 className=''>Centro Documental</h1>
                 </section>
-            </header>                    
+            </header>
         </>
     );
 }

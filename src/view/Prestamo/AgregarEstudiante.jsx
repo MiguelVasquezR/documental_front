@@ -29,7 +29,7 @@ const AgregarEstudiante = () => {
     return (
         <>
             <Header />
-            <body className="w-[90%] mx-auto my-5 flex flex-col justify-center gap-4">
+            <div className="w-[90%] mx-auto my-5 flex flex-col justify-center gap-4">
                 <h2 className="font-bold">Información Estudiante</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center gap-4 mx-auto w-[90%]">
                     <input className={`${styleInputs}`} type="text" placeholder="Matricula*" {...register("Matricula", { required: true })} />
@@ -43,7 +43,7 @@ const AgregarEstudiante = () => {
                 {
                     error && <p className="bg-danger text-secondary-a p-1 text-center rounded-md">{error}</p>
                 }
-            </body>
+            </div>
         </>
     );
 }

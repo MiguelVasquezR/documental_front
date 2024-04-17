@@ -3,7 +3,7 @@ import './CargandoStyle.css';
 
 const Cargando = () => {
     return (
-        <div className="loader h-screen w-screen">
+        <div className="loader h-screen w-screen z-50 fixed top-0 left-0 bg-[#f2f2f2]/70">
             <div className="book-wrapper">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

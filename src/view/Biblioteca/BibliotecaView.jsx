@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../../component/Header/Header';
 import CardItem from '../../component/CardItem/CardItem';
 import Lupa from '../../images/Lupa.jsx'
+import CargandoLibro from '../../component/Loaders/CargandoLibro/Cargando';
 
 const BibliotecaView = () => {
 
@@ -49,6 +50,8 @@ const BibliotecaView = () => {
 
       <section>
         {
+
+          librosFiltrados.length !== 0 ? 
           librosFiltrados.map((libros, index) => {
             return (
               <div key={index}>
@@ -57,6 +60,8 @@ const BibliotecaView = () => {
 
             )
           })
+          :
+          <CargandoLibro />
         }
       </section>
     </>

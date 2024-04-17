@@ -17,10 +17,11 @@ const FormUbicacion = ({ handleGetLocation }) => {
     }
 
     return (
-        <section>
+        <section className=''>
+
 
             <legend>Ubicación</legend>
-            <select value={repisa} onChange={(e) => setRepisa(e.target.value)} className='w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2'>
+            <select value={repisa} onChange={(e) => setRepisa(e.target.value)} className='w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2 outline-none'>
                 <option value="">Seleccione una repisa</option>
                 <option value="1">Repisa 1</option>
                 <option value="2">Repisa 2</option>
@@ -28,7 +29,7 @@ const FormUbicacion = ({ handleGetLocation }) => {
             <input
                 value={columna}
                 onChange={(e) => setColumna(e.target.value)}
-                className='w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2'
+                className='outline-none w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2'
                 type="number"
                 onInput={handleContadorCaracteres}
                 placeholder='Columna *'
@@ -36,7 +37,7 @@ const FormUbicacion = ({ handleGetLocation }) => {
             <input
                 value={fila}
                 onChange={(e) => setFila(e.target.value)}
-                className='w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2'
+                className='outline-none w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2'
                 type="numer"
                 onInput={handleContadorCaracteres}
                 placeholder='Fila *'

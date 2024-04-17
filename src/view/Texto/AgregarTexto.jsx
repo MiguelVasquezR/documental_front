@@ -16,7 +16,7 @@ import BotonCargando from '../../component/Loaders/BotonCargando/BotonCargando';
 
 
 const AgregarTexto = () => {
-    const stylesInputs = "border-b-[1px] w-[90%] p-1";
+    const stylesInputs = "border-b-[1px] w-[90%] p-1 outline-none";
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false)
@@ -27,6 +27,8 @@ const AgregarTexto = () => {
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("Cargando...");
     const fileInputRef = useRef(null);
+
+    const [btnBloqueado, setBtnBloqueado] = useState(false);
 
     const handleUploadImage = async (e) => {
         e.stopPropagation();
@@ -44,9 +46,11 @@ const AgregarTexto = () => {
     }
 
     const handleSave = async (data) => {
+        setBtnBloqueado(true);
 
         if (!dataImage || dataImage === undefined) {
             console.log('No se ha ejecutado el handleSave');
+            setBtnBloqueado(false);
             return;
         }
 
@@ -141,12 +145,12 @@ const AgregarTexto = () => {
                 <fieldset className=' flex flex-col justify-center items-center gap-4 w-[90%]'>
                     <legend className='p-3 text-lg font-bold'>Reseña</legend>
                     <textarea {...register("Resena", { required: true })} placeholder='Escribe tu Reseña'
-                        className='border-[1px] border-solid border-[#000] w-[90%] p-1 h-[200px] max-h-[500px]'></textarea>
+                        className='border-[1px] border-solid border-[#000] w-[90%] p-1 h-[200px] max-h-[500px] outline-none'></textarea>
                 </fieldset>
 
                 <FormUbicacion handleGetLocation={handleLocation} />
 
-                <button className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' type='submit'>Guardar</button>
+                <button disabled={btnBloqueado} className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' type='submit'>Guardar</button>
 
                 {
                     isLoading ? <CargandoLibro /> : ""
