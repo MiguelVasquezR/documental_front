@@ -6,6 +6,11 @@ import axios from 'axios';
 const PeliculaView = () => {
 
     const [peliculas, setPeliculas] = useState([])
+    const [search, setSearch] = useState('')
+
+    const peliculaFiltradas = peliculas.filter((pelicula) => {
+        return pelicula.Titulo.toLowerCase().includes(search.toLowerCase())
+    });
 
     useEffect(() => {
         axios.get(`http://${import.meta.env.VITE_IP}/pelicula/listar`)
@@ -22,38 +27,47 @@ const PeliculaView = () => {
     return (
         <>
             <Header />
-            <Link to={"/pelicula/agregar"} className='bg-primary text-secondary-a px-4 py-2 rounded-md m-4 inline-block'>Agregar Libro</Link>
-            <hr className='bg-[#c2c2c2] w-[90%] h-[1] mx-4' />
-            <form className='w-[90%] my-3 mx-auto flex flex-row items-center justify-between'>
-                <input type="text" placeholder='Ingresa Titulo' className='border-[1px] border-solid border-[#c2c2c2] p-2 rounded-md w-[200px]' />
-                <input type="submit" value={"Buscar"} className='bg-primary text-secondary-a px-4 py-2 rounded-md' />
-            </form>
-            <h2 className='ml-4 my-4 text-lg'>Lista de Películas</h2>
-            <h4 className='text-[red] text-sm w-[90%] m-4 md:hidden'>Si deseas editar o eliminar, hazlo desde el navegador del escritorio**</h4>
-            <table className='max-w-[800px] w-[90%] mx-auto mb-8'>
-                <thead className='w-[100%]'>
-                    <tr>
-                        <th className='w-[20%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Código</th>
-                        <th className='w-[40%] md:w-[25%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Titulo</th>
-                        <th className='w-[40%] md:w-[25%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Autor</th>
-                        <th className='hidden md:table-cell md:w-[15%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Editar</th>
-                        <th className='hidden md:table-cell md:w-[15%] text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Eliminar</th>
-                    </tr>
-                </thead>
-                <tbody className='w-[100%]'>
-                    {
-                        peliculas.map((pelicula, index) => {
-                            return (
-                                <tr key={index} className='text-center'>
-                                    <td className='border-solid border-[#c2c2c2] border-[1px]' >{pelicula.Codigo}</td>
-                                    <td className='border-solid border-[#c2c2c2] border-[1px]' >{pelicula.Titulo}</td>
-                                    <td className='border-solid border-[#c2c2c2] border-[1px]' >{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</td>
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </table>
+
+            <section className='max-w-[1270px] mx-auto'>
+
+                <Link to={"/pelicula/agregar"} className='bg-primary text-secondary-a px-4 py-2 rounded-md m-4 inline-block'>Agregar Libro</Link>
+
+                <hr className='bg-[#c2c2c2] w-[90%] lg:w-[100%] h-[1px] mx-auto lg:mx-0' />
+
+                <form className='w-[90%] my-3 mx-auto flex flex-row items-center justify-between max-w-[1270px] lg:w-[100%]' >
+                    <input value={search} onChange={(e)=>{setSearch(e.target.value)}} type="text" placeholder='Ingresa Titulo' className='border-[1px] border-solid border-[#c2c2c2] p-2 rounded-md w-[200px] md:w-[400px] lg:w-[500px] max-w-[700px] outline-none' />
+                </form>
+
+                <h2 className='ml-4 my-4 text-lg lg:ml-0'>Lista Películas</h2>
+
+                <table className='w-[90%] mx-auto lg:w-[100%] rounded-sm'>
+                    <thead>
+                        <tr>
+                            <th className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Código</th>
+                            <th className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Titulo</th>
+                            <th className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Autor</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {
+                            peliculaFiltradas.map((pelicula, index) => {
+                                return (
+                                    <tr key={index} className='my-[1px]'>
+                                        <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.Codigo}</td>
+                                        <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.Titulo}</td>
+                                        <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</td>
+                                    </tr>
+                                );
+                            })
+                        }
+                    </tbody>
+                </table>
+
+
+            </section>
+
+
         </>
     );
 };

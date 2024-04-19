@@ -112,7 +112,7 @@ const PrestamoView = () => {
 
                     {
                         paso === 1 ?
-                            <form action="" className="flex flex-col justify-center items-center gap-5">
+                            <form action="" className="flex flex-col justify-center items-center gap-5 mx-auto max-w-[500px]">
                                 <input value={matricula} onChange={validarMatricula} className="outline-none border-b-[1px] border-solid border-[#000] p-1 w-[80%]" type="text" placeholder="Matricula: S12345678" />
                                 <div className="flex flex-row justify-center items-center gap-5">
                                     <button onClick={obtenerEstudiante} type="submit" className="bg-primary py-2 px-4 text-secondary-a rounded-md">Buscar</button>
@@ -120,7 +120,7 @@ const PrestamoView = () => {
                                 </div>
                             </form>
                             :
-                            <form action="" className="flex flex-col justify-center items-center gap-5">
+                            <form action="" className="flex flex-col justify-center items-center gap-5 mx-auto max-w-[500px]">
                                 <input value={codigo} onChange={(e) => { setCodigo(e.target.value) }} className="outline-none border-b-[1px] border-solid border-[#000] p-1 w-[80%]" type="text" placeholder="Ingresar código del libro" />
                                 <button onClick={obtenerLibro} type="submit" className="bg-primary py-2 px-4 text-secondary-a rounded-md">Buscar</button>
                             </form>
@@ -129,7 +129,7 @@ const PrestamoView = () => {
 
                 {
                     estudiante ?
-                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight">
+                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight rounded-md max-w-[700px]">
                             <h2 className="my-2 font-bold text-xl">Información del Estudiante</h2>
                             <article className="flex flex-col justify-center items-center gap-2 text-center">
                                 <h3>Nombre: {estudiante?.Nombre + " " + estudiante?.Paterno + " " + estudiante?.Materno}</h3>
@@ -144,7 +144,7 @@ const PrestamoView = () => {
 
                 {
                     libro ?
-                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight">
+                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight rounded-md max-w-[700px]">
                             <h2 className="font-bold text-xl my-2">Información del Libro</h2>
 
                             <article className="flex flex-row justify-center items-center gap-2">
@@ -166,7 +166,7 @@ const PrestamoView = () => {
 
                 {
                     libro && estudiante ?
-                        <div className="animate-slideInRight w-[100%] flex flex-col items-center justify-center gap-5"> 
+                        <div className="animate-slideInRight w-[100%] flex flex-col items-center justify-center gap-5 rounded-md max-w-[700px]"> 
                             <section className="shadow-md w-[90%] p-5 mx-auto">
                                 <h2 className="text-xl font-bold my-2">Información de Entrega</h2>
                                 <div className="flex flex-row justify-center items-center gap-5">
@@ -174,7 +174,7 @@ const PrestamoView = () => {
                                     <p>Fin: {fechaAumentada}</p>
                                 </div>
                             </section>
-                            <button disabled={bloqueado} onClick={guardarPrestamo} className="bg-primary px-2 py-4 text-secondary-a rounded-md mb-5">Guardar Prestamo</button>
+                            <button disabled={bloqueado} onClick={guardarPrestamo} className="bg-primary px-2 py-4 text-secondary-a rounded-md mb-5 hover:bg-primary/90">Guardar Prestamo</button>
                         </div>
                         :
                         ""

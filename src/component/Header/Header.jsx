@@ -52,14 +52,45 @@ const Header = () => {
     return (
         <>
             <header className='bg-primary w-screen flex flex-row justify-between items-center px-4'>
-                <div onClick={handleClick}>
+                <div onClick={handleClick} className='lg:hidden'>
                     <Menu color={'white'} w={32} />
                 </div>
+
+                <nav className='hidden lg:flex text-secondary-a'>
+                    <ul className='flex flex-row'>
+                        <li className='p-4 text-lg font-bold text-center' >
+                            <Link to={"/"}>Inicio</Link>
+                        </li>
+                        <li className='p-4 text-lg font-bold text-center' >
+                            <Link to={"/biblioteca"}>Biblioteca</Link>
+                        </li>
+                        <li className='p-4 text-lg font-bold text-center' >
+                            <Link to={"/videoteca"}>Videoteca</Link>
+                        </li>
+                        <li className='p-4 text-lg font-bold text-center' >
+                            <Link to={"/prestamo"}>Prestamo</Link>
+                        </li>
+                        <li className='p-4 text-lg font-bold text-center' >
+                            <Link to={"/devolucion"}>Devoluciones</Link>
+                        </li>
+                        <li className='p-4 text-lg font-bold text-center' >
+                            <Link to={"/texto"}>Libros</Link>
+                        </li>
+                        <li className='p-4 text-lg font-bold text-center' >
+                            <Link to={"/pelicula"}>Película</Link>
+                        </li>
+                    </ul>
+                </nav>
 
                 <section className='text-secondary-a flex flex-row items-center justify-center'>
                     <img src={Logo} className='w-[100px]' />
                     <h1 className=''>Centro Documental</h1>
                 </section>
+
+
+
+
+
             </header>
         </>
     );

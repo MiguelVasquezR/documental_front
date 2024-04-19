@@ -25,15 +25,18 @@ const AgregarPelicula = () => {
     const { register, handleSubmit } = useForm();
     const [generos, setGeneros] = useState([]);
     const navigate = useNavigate();
+    const [btnBloqueado, setBtnBloqueado] = useState(false);
 
     const handleAddGenero = () => {
         setGeneros([...generos, ""]);
     };
 
     const handleGeneroChange = (index, value) => {
-        const updatedGeneros = [...generos];
-        updatedGeneros[index] = value;
-        setGeneros(updatedGeneros);
+        if (value.trim() !== "") {
+            const updatedGeneros = [...generos];
+            updatedGeneros[index] = value.trim(); // Eliminar espacios en blanco al principio y al final
+            setGeneros(updatedGeneros);
+        }
     };
 
     const handleUploadImage = async (e) => {
@@ -54,6 +57,8 @@ const AgregarPelicula = () => {
     }
 
     const guardarPelicula = async (data) => {
+        setBtnBloqueado(true);
+
 
         const dataAutor = {
             Nombre: data.nombre,
@@ -157,7 +162,7 @@ const AgregarPelicula = () => {
                                 placeholder='Género *'
                                 className='border-b-[1px] border-solid outline-none border-[#000] p-1 w-[100%]'
                                 value={genero}
-                                onChange={(e) => handleGeneroChange(index, e.target.value)}
+                                onChange={(e) => {handleGeneroChange(index, e.target.value)}}
                             />
                         ))}
                         <div className='w-[50px] mx-auto' onClick={handleAddGenero}>
@@ -165,7 +170,7 @@ const AgregarPelicula = () => {
                         </div>
                     </fieldset>
 
-                    <button type='submit' className='bg-primary px-4 my-5 py-2 text-secondary-a rounded-md'>Guardar</button>
+                    <button disabled={btnBloqueado} type='submit' className='bg-primary px-4 my-5 py-2 text-secondary-a rounded-md'>Guardar</button>
 
                 </form>
 

@@ -52,7 +52,7 @@ const App = () => {
 
 
         return (
-            <div className='w-[90%] h-[150px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
+            <div className='w-[90%] h-[150px] max-w-[300px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
 
                 <picture>
                     <img src={`${t?.LinkFoto}`} className='object-cover rounded-md h-[120px] w-[100px]' />
@@ -75,16 +75,19 @@ const App = () => {
             <section className='py-4'>
                 <h2 className='text-right pr-8 font-bold tracking-wider'>{formattedDate}</h2>
                 <h2 className='p-4' >Próximas Devoluciones</h2>
-                {
-                    prestamo.map((p, index) => {
-                        if (p.Estado !== "Devuelto"){
-                            return <CardPrestamo key={index} p={p} />
-                        }else{
-                            return ""
-                        }
-                        
-                    })
-                }
+
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                    {
+                        prestamo.map((p, index) => {
+                            if (p.Estado !== "Devuelto") {
+                                return <CardPrestamo key={index} p={p} />
+                            } else {
+                                return ""
+                            }
+
+                        })
+                    }
+                </div>
             </section>
 
         </>

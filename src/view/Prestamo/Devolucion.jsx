@@ -3,6 +3,7 @@ import axios from "axios";
 
 import Header from "../../component/Header/Header";
 import { useNavigate } from "react-router-dom";
+import { set } from "react-hook-form";
 
 const Devolucion = () => {
 
@@ -11,6 +12,7 @@ const Devolucion = () => {
     const [prestamo, setPrestamo] = useState(null);
     const [codigo, setCodigo] = useState("");
     const navigate = useNavigate();
+    const [btnBloqueado, setBtnBloqueado] = useState(false);
 
     const obtenerPrestamo = (e) => {
         e.preventDefault();
@@ -39,7 +41,7 @@ const Devolucion = () => {
     }, [prestamo]);
 
     const confirmarDevolucion = () => {
-        console.log(prestamo.ID);
+        setBtnBloqueado(true);
         axios.put(`http://${import.meta.env.VITE_IP}/prestamo/confirmar-devolucion?id=${prestamo.ID}`)
             .then((res) => {
                 console.log(res.data.mensaje);
@@ -59,14 +61,14 @@ const Devolucion = () => {
             <section className="flex flex-col justify-center items-center gap-5">
                 <h2 className="font-bold text-2xl my-2">Devolución</h2>
 
-                <form action="" className="w-[90%] flex flex-col justify-center items-center gap-5 mx-auto">
+                <form action="" className="w-[90%] flex flex-col justify-center items-center gap-5 mx-auto rounded-md max-w-[700px]">
                     <input value={codigo} onChange={(e) => { setCodigo(e.target.value) }} className="outline-none border-b-[1px] border-[#000] border-solid p-1 w-[80%] text-center" type="text" placeholder="Ingresa código del libro" />
                     <button onClick={obtenerPrestamo} className="bg-primary px-4 py-2 rounded-md text-secondary-a" type="submit">Búscar</button>
                 </form>
 
                 {
                     estudiante !== null ?
-                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight">
+                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight rounded-md max-w-[700px]">
                             <h2 className="my-2 font-bold text-xl">Información del Estudiante</h2>
                             <article className="flex flex-col justify-center items-center gap-2">
                                 <h3>Nombre: {estudiante?.Nombre + " " + estudiante?.Paterno + " " + estudiante?.Materno}</h3>
@@ -81,7 +83,7 @@ const Devolucion = () => {
 
                 {
                     libro !== null ?
-                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight">
+                        <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight rounded-md max-w-[700px]">
                             <h2 className="font-bold text-xl my-2">Información del Libro</h2>
 
                             <article className="flex flex-row justify-center items-center gap-2">
@@ -103,7 +105,7 @@ const Devolucion = () => {
 
                 {
                     libro && estudiante ?
-                    <button onClick={confirmarDevolucion} className="my-5 bg-primary px-2 py-4 text-secondary-a rounded-md animate-slideInRight">Aceptar Devolución</button>
+                    <button disabled={btnBloqueado} onClick={confirmarDevolucion} className="my-5 bg-primary px-2 py-4 text-secondary-a rounded-md animate-slideInRight">Aceptar Devolución</button>
                     :
                     ""
                 }

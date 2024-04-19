@@ -4,10 +4,12 @@ import Header from '../../component/Header/Header';
 import FormUbicacion from '../../component/FormUbicacion/FormUbicacion';
 
 const EditarTexto = () => {
+    const [btnBlock, setBtnBlock] = useState(false);
 
     const stylesInputs = "border-b-[1px] w-[90%] p-1";
 
     const handleSave = () => {
+        setBtnBlock(true);
         alert('Guardado');
     }
 
@@ -43,7 +45,7 @@ const EditarTexto = () => {
 
                 <FormUbicacion />
 
-                <button className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' onClick={handleSave}>Guardar</button>
+                <button disabled={btnBlock} className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' onClick={handleSave}>Guardar</button>
 
             </form>
 

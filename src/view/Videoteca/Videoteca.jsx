@@ -7,6 +7,11 @@ import Lupa from '../../images/Lupa';
 const Videoteca = () => {
     const [peliculas, setPeliculas] = useState([])
     const [generos, setGeneros] = useState([])
+    const [search, setSearch] = useState('');
+
+    const peliculaFiltradas = peliculas.filter((peliculas) => {
+        return peliculas.Titulo.toLowerCase().includes(search.toLowerCase());
+    });
 
     useEffect(() => {
         axios.get(`http://${import.meta.env.VITE_IP}/pelicula/listar`)
@@ -31,44 +36,63 @@ const Videoteca = () => {
         <>
             <Header />
 
-            <div className='border-[1px] border-solid rounded-md w-[300px] max-w-2xl h-[40px] bg-secondary-a mx-auto my-8 flex flex-row justify-center items-center'>
-                <input type="text" placeholder="Buscar" className='bg-transparent h-[100%] border-none outline-none p-4 ' />
-                <div className=''>
+            <div className='border-[1px] border-solid rounded-md w-[300px] max-w-2xl h-[40px] bg-secondary-a mx-auto my-8 flex flex-row justify-center items-center md:w-[500px]'>
+                <input type="text" placeholder="Buscar" className='bg-transparent w-[100%] h-[100%] border-none outline-none p-4 ' value={search} onChange={(e)=>{setSearch(e.target.value)}} />
+                <div className='px-1'>
                     <Lupa color={'black'} w={28} />
                 </div>
             </div>
 
-            {
-                peliculas.map((pelicula, index) => {
-                    return (
-                        <div key={index} className='bg-primary my-5 w-[90%] rounded-md shadow-md flex flex-col justify-evenly py-2 items-center mx-auto'>
-                            <div className='flex flex-row justify-evenly items-center w-[100%]'>
-                                <picture>
-                                    <img src={pelicula.LinkFoto} className='rounded-md w-[140px] h-[180px]' />
-                                </picture>
-                                <article className='flex flex-col justify-center items-center gap-1 text-secondary-a text-center w-[50%]'>
-                                    <h2>{pelicula.Codigo}</h2>
-                                    <h2>{pelicula.Titulo}</h2>
-                                    <h2>{pelicula?.Tipo?.toUpperCase()}</h2>
-                                    <h2>{pelicula.Ano}</h2>
-                                    <h2>{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</h2>
+            <section className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5'>
+                {
+                    peliculaFiltradas.map((pelicula, index) => {
+                        return (
+                            <div key={index} className='w-[360px] h-[220px] shadow-md rounded-md grid grid-cols-2 gap-3 mx-auto'>
+
+                                <img src={pelicula.LinkFoto} className='h-[220px] w-[200px] object-fill rounded-md' />
+
+                                <article className='flex flex-col justify-center gap-1'>
+
+                                    <p className='text-[12px] font-bold'>{pelicula.Titulo}</p>
+                                    <div>
+                                        <p className='text-[8px] text-[#000]/50'>Código:</p>
+                                        <p className='text-[10px]'>{pelicula.Codigo}</p>
+                                    </div>
+                                    <div>
+                                        <p className='text-[8px] text-[#000]/50'>Autor:</p>
+                                        <p className='text-[10px]'>{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</p>
+                                    </div>
+                                    <div>
+                                        <p className='text-[8px] text-[#000]/50'>Formato:</p>
+                                        <p className='text-[10px]'>{pelicula.Tipo}</p>
+                                    </div>
+                                    <div>
+                                        <p className='text-[8px] text-[#000]/50'>Tipo:</p>
+                                        <p className='text-[10px]'>{pelicula.Proviene}</p>
+                                    </div>
+
+
+                                    <section>
+                                        <h4 className='text-[12px] font-bold'>Género</h4>
+                                        <div className='flex flex-row justify-center items-center gap-1'>
+                                            {
+                                                generos.map((genero, index) => {
+                                                    if (genero.IDPelicula === pelicula.ID && genero.Nombre !== '') {
+                                                        return <p key={index} className='text-[8px] bg-primary p-1 rounded-md text-secondary-a mt-1'>{genero.Nombre}</p>
+                                                    }
+                                                })
+                                            }
+                                        </div>
+                                    </section>
+
+
                                 </article>
+
                             </div>
-                            <div className='flex flex-row justify-center items-center w-[100%] gap-3 px-1 py-2'>
-                                {
-                                    generos.map((genero, index) => {
-                                        if (pelicula.ID === genero.IDPelicula) {
-                                            return (
-                                                <h2 key={index} className='bg-secondary-a text-primary text-[12px] text-center rounded-md p-1 m-1'>{genero.Nombre}</h2>
-                                            )
-                                        }
-                                    })
-                                }
-                            </div>
-                        </div>
-                    )
-                }).reverse()
-            }
+                        )
+                    }).reverse()
+                }
+            </section>
 
 
 
