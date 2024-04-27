@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Back from '../../images/ArrowLeft';
 
@@ -15,6 +15,7 @@ const Información = () => {
     const id = searchParams.get('id');
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState({});
+    const [ubicacion, setUbiacion] = useState({});
 
     const goBack = () => {
         navigate(-1);
@@ -25,6 +26,7 @@ const Información = () => {
         axios.get(`http://${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
             .then((res) => {
                 setData(res.data);
+                setUbiacion(JSON.parse(res.data.Ubicacion));
                 setIsLoading(false);
             })
             .catch((err) => {
@@ -67,6 +69,10 @@ const Información = () => {
                             </article>
 
                         </section>
+                        <div className='w-[100%] xl:w-[80%] xl:mx-auto xl:my-5 '>
+                            <h2 className='text-xl font-bold'>Ubicación</h2>
+                            <Ubicacion size={ubicacion?.repisa === '1' ? 4 : 6} col={ubicacion.columna} row={ubicacion.fila} />
+                        </div>
 
                     </>
             }

@@ -23,6 +23,7 @@ const AgregarTexto = () => {
 
     const [dataImage, setDataImage] = useState();
     const [location, setLocation] = useState({});
+    const [codeRepeat, setCodeRepeat] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("Cargando...");
@@ -87,7 +88,12 @@ const AgregarTexto = () => {
 
             if (mensaje === "Texto creado") {
                 navigate('/texto');
-            } else {
+            } else if (mensaje === 'Codigo Existente') {
+                setIsLoading(false);
+                setBtnBloqueado(false);
+                setCodeRepeat(true);
+            }
+            else {
                 console.log('No se ha creado el libro');
             }
         } catch (error) {
@@ -111,7 +117,7 @@ const AgregarTexto = () => {
     return (
         <>
             <Header />
-            
+
 
             <div className='w-[90%] mx-auto my-4 flex flex-row justify-center items-center gap-5'>
                 {dataImage ? <img className='w-[100px] h-[150px] rounded-sm' src={dataImage} /> : <div className='bg-[#f2f2f2] w-[100px] h-[150px] rounded-sm border-solid border-[1px] border-[#000]'></div>}
@@ -149,6 +155,10 @@ const AgregarTexto = () => {
                 </fieldset>
 
                 <FormUbicacion handleGetLocation={handleLocation} />
+
+                {
+                    codeRepeat ? <p className='bg-red-500 w-[90%] text-secondary-a p-2 rounded-sm  text-center'>Texto no creado, el código ya existe</p> : ""
+                }
 
                 <button disabled={btnBloqueado} className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' type='submit'>Guardar</button>
 
