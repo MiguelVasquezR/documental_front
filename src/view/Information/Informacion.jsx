@@ -22,7 +22,6 @@ const Información = () => {
     }
 
     useEffect(() => {
-
         axios.get(`http://${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
             .then((res) => {
                 setData(res.data);
@@ -69,7 +68,7 @@ const Información = () => {
                             </article>
 
                         </section>
-                        <div className='w-[100%] xl:w-[80%] xl:mx-auto xl:my-5 '>
+                        <div className='w-[90%] xl:w-[80%] mx-auto xl:my-5 '>
                             <h2 className='text-xl font-bold'>Ubicación</h2>
                             <Ubicacion size={ubicacion?.repisa === '1' ? 4 : 6} col={ubicacion.columna} row={ubicacion.fila} />
                         </div>

@@ -18,7 +18,11 @@ const App = () => {
     useEffect(() => {
         axios.get(`http://${import.meta.env.VITE_IP}/prestamo/listar`)
             .then((res) => {
-                setPrestamo(res.data);
+                if (res.data) {
+                    setPrestamo(res.data);
+                } else {
+                    setPrestamo(null);
+                }
             })
             .catch((err) => {
                 console.log(err)
@@ -78,16 +82,24 @@ const App = () => {
 
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
                     {
-                        prestamo.map((p, index) => {
-                            if (p.Estado !== "Devuelto") {
-                                return <CardPrestamo key={index} p={p} />
-                            } else {
-                                return ""
-                            }
+                        prestamo !== null ?
+                            prestamo.map((p, index) => {
+                                if (p.Estado !== "Devuelto") {
+                                    return <CardPrestamo key={index} p={p} />
+                                } else {
+                                    return ""
+                                }
 
-                        })
+                            }) : null
                     }
                 </div>
+
+                {
+                    prestamo.length === 0 ?
+                        <div className='w-[90%] h-[150px] max-w-[300px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
+                            <h2 className='text-center'>No hay préstamos pendientes</h2>
+                        </div> : ""
+                }
             </section>
 
         </>

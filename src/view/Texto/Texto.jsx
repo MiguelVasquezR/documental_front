@@ -42,13 +42,13 @@ const Texto = () => {
     }, []);
 
     const librosFiltrados = useMemo(() => {
-        return libros.filter(libro => libro.Titulo.toLowerCase().includes(search.toLowerCase()));
+        return libros ?  libros.filter(libro => libro.Titulo.toLowerCase().includes(search.toLowerCase())) : "";
     }, [libros, search]);
 
     return (
         <>
             <Header />
-            <section className='max-w-[1270px] mx-auto'>
+            <section className='max-w-[1270px] mx-auto md:w-[90%] lg:w-[90%]'>
                 <Link to={"/texto/agregar"} className='bg-primary text-secondary-a px-4 py-2 rounded-md m-4 inline-block'>
                     Crear Libro
                 </Link>
@@ -67,7 +67,7 @@ const Texto = () => {
                     </div>
                 </div>
 
-                <table className='w-[90%] mx-auto lg:w-[100%] rounded-sm'>
+                <table className='w-[90%] mx-auto lg:w-[100%] md:w-[90%] rounded-sm'>
                     <thead>
                         <tr>
                             <th className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>Código</th>
@@ -77,13 +77,18 @@ const Texto = () => {
                     </thead>
 
                     <tbody>
-                        {librosFiltrados.map((libro, index) => (
+
+                        { librosFiltrados.length !== 0 ?
+                        librosFiltrados.map((libro, index) => (
                             <tr key={index} onClick={() => handleBookClick(libro)} className={`my-[1px] ${isSelectedBook?.Codigo === libro.Codigo ? "bg-primary text-secondary-a" : ""}`}>
                                 <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Codigo}</td>
                                 <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Titulo}</td>
                                 <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Nombre + " " + libro.Paterno + " " + libro?.Materno}</td>
                             </tr>
-                        ))}
+                        ))
+                        :
+                        null
+                    }
                     </tbody>
                 </table>
             </section>

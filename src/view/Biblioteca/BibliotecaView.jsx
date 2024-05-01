@@ -7,10 +7,9 @@ import Lupa from '../../images/Lupa.jsx'
 import CargandoLibro from '../../component/Loaders/CargandoLibro/Cargando';
 
 const BibliotecaView = () => {
-
-
   const [libros, setLibros] = useState([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoaging] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -18,18 +17,23 @@ const BibliotecaView = () => {
   }
 
   const librosFiltrados = libros.filter((libro) => {
-    return libro.Titulo.toLowerCase().includes(search.toLowerCase());
+    return libros ? libro.Titulo.toLowerCase().includes(search.toLowerCase()) : null;
   });
 
-
   useEffect(() => {
+    setLoaging(true);
     axios.get(`http://${import.meta.env.VITE_IP}/texto/biblioteca`)
       .then((res) => {
-
-        setLibros(res.data);
+        if (res.data) {
+          setLibros(res.data);
+          setLoaging(false);
+        } else {
+          setLoaging(false);
+        }
       })
       .catch((err) => {
         console.log("Error en la petición: " + err);
+        setLoaging(false);
       })
   }, [])
 
@@ -51,7 +55,7 @@ const BibliotecaView = () => {
       <section className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
         {
 
-          librosFiltrados.length !== 0 ? 
+          librosFiltrados &&
           librosFiltrados.map((libros, index) => {
             return (
               <div key={index}>
@@ -60,10 +64,20 @@ const BibliotecaView = () => {
 
             )
           })
-          :
+        }
+
+        {
+          loading &&
           <CargandoLibro />
         }
       </section>
+
+      {
+        librosFiltrados.length === 0 &&
+        <div className='text-center font-bold text-2xl'>
+          <p>No hay resultado</p>
+        </div>
+      }
     </>
   );
 }
