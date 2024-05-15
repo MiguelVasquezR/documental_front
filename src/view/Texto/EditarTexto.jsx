@@ -155,7 +155,7 @@ const EditarTexto = () => {
                     {repisa === '1' ? <Ubicacion col={columna} row={fila} size={4} /> : <Ubicacion col={columna} row={fila} size={6} />}
                 </section>
 
-                <button disabled={btnBloqueado} className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' type='submit'>Guardar</button>
+                <button disabled={btnBloqueado} className='px-5 py-3 m-3 rounded-md bg-primary text-secondary-a' type='submit'>Guardar</button>
 
                 {isLoading ? <CargandoLibro /> : ""}
             </form>

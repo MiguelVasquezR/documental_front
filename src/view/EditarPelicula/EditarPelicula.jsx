@@ -90,11 +90,11 @@ const EditarPelicula = () => {
         <>
             <Header />
             <h2 className="m-4 text-xl font-bold text-center">Editar Película</h2>
-            <section className="flex flex-col justify-center items-center gap-5">
+            <section className="flex flex-col items-center justify-center gap-5">
                 <form onSubmit={handleSubmit(guardarPelicula)} className="mx-auto w-[90%] flex flex-col justify-center items-center gap-9">
                     <fieldset className="flex flex-col gap-4 w-[100%]">
 
-                        <legend className="font-bold text-xl my-4">Información de Película</legend>
+                        <legend className="my-4 text-xl font-bold">Información de Película</legend>
                         <input value={pelicula.Codigo} name="Codigo" onChange={handleInputChange} type="text" placeholder="Código" className="border-b-[1px] border-solid outline-none border-[#000] p-1 w-[100%]" />
                         <input value={pelicula.Titulo} name="Titulo" onChange={handleInputChange} type="text" placeholder="Título" className="border-b-[1px] border-solid outline-none border-[#000] p-1 w-[100%]" />
                         <input value={pelicula.Ano} name="Ano" onChange={handleInputChange} type="text" placeholder="Año" className="border-b-[1px] border-solid outline-none border-[#000] p-1 w-[100%]" />
@@ -112,14 +112,14 @@ const EditarPelicula = () => {
                     </fieldset>
 
                     <fieldset className="flex flex-col gap-4 w-[100%]">
-                        <legend className="font-bold text-xl my-4">Información del Autor</legend>
+                        <legend className="my-4 text-xl font-bold">Información del Autor</legend>
                         <input value={pelicula.Nombre} name="Nombre" onChange={handleInputChange} type="text" placeholder="Nombre" className="border-b-[1px] outline-none border-solid border-[#000] p-1 w-[100%]" required />
                         <input value={pelicula.Paterno} name="Paterno" onChange={handleInputChange} type="text" placeholder="Paterno" className="border-b-[1px] outline-none border-solid border-[#000] p-1 w-[100%]" required />
                         <input value={pelicula.Materno} name="Materno" onChange={handleInputChange} type="text" placeholder="Materno" className="border-b-[1px] outline-none border-solid border-[#000] p-1 w-[100%]" />
                     </fieldset>
 
                     {loading && <BotonCargando />}
-                    <button disabled={btnBloqueado} type="submit" className="bg-primary px-4 my-5 py-2 text-secondary-a rounded-md">
+                    <button disabled={btnBloqueado} type="submit" className="px-4 py-2 my-5 rounded-md bg-primary text-secondary-a">
                         Guardar
                     </button>
                 </form>

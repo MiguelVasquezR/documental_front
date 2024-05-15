@@ -160,25 +160,25 @@ const PrestamoView = () => {
         <>
             <Header />
 
-            <div className="flex flex-col justify-center items-center gap-7 relative">
+            <div className="relative flex flex-col items-center justify-center gap-7">
 
                 {showForm && (
-                    <div className="w-screen h-screen bg-black/50 fixed top-0 flex justify-center items-center">
+                    <div className="fixed top-0 flex items-center justify-center w-screen h-screen bg-black/50">
                         <form onSubmit={actualizarEstudiante} className="bg-white shadow-md w-[500px] h-[700px] flex flex-col justify-center items-center gap-5 relative rounded-md">
-                            <IoCloseCircleOutline onClick={() => setShowForm(!showForm)} className="absolute top-2 right-2 cursor-pointer" size={50} />
-                            <legend className="font-bold text-2xl my-5">Actualizar Estudiante</legend>
+                            <IoCloseCircleOutline onClick={() => setShowForm(!showForm)} className="absolute cursor-pointer top-2 right-2" size={50} />
+                            <legend className="my-5 text-2xl font-bold">Actualizar Estudiante</legend>
                             <input value={nombre} onChange={handleChange} name="nombre" type="text" className="border-b-[1px] border-solid border-[#000]  outline-none w-[80%] p-1" placeholder="Nombre" />
                             <input value={apellidoPaterno} onChange={handleChange} name="apellidoPaterno" type="text" className="border-b-[1px] border-solid border-[#000] outline-none  w-[80%] p-1" placeholder="Apellido Paterno" />
                             <input value={apellidoMaterno} onChange={handleChange} name="apellidoMaterno" type="text" className="border-b-[1px] border-solid border-[#000] outline-none  w-[80%] p-1" placeholder="Apellido Materno" />
                             <input value={correo} onChange={handleChange} name="correo" type="text" className="border-b-[1px] border-solid border-[#000]  outline-none w-[80%] p-1" placeholder="Correo" />
                             <input value={telefono} onChange={handleChange} name="telefono" type="text" className="border-b-[1px] border-solid border-[#000] w-[80%] outline-none p-1" placeholder="Teléfono" />
-                            <button className="bg-primary p-2 rounded-md text-secondary-a" type="submit">Actualizar</button>
+                            <button className="p-2 rounded-md bg-primary text-secondary-a" type="submit">Actualizar</button>
                         </form>
                     </div>
                 )}
 
 
-                <h2 className="text-center text-2xl font-bold my-5">Prestamo</h2>
+                <h2 className="my-5 text-2xl font-bold text-center">Prestamo</h2>
 
                 <section className="w-[100%]">
 
@@ -186,15 +186,15 @@ const PrestamoView = () => {
                         paso === 1 ?
                             <form action="" className="flex flex-col justify-center items-center gap-5 mx-auto max-w-[500px]">
                                 <input value={matricula} onChange={validarMatricula} className="outline-none border-b-[1px] border-solid border-[#000] p-1 w-[80%]" type="text" placeholder="Matricula: S12345678" />
-                                <div className="flex flex-row justify-center items-center gap-5">
-                                    <button onClick={obtenerEstudiante} type="submit" className="bg-primary py-2 px-4 text-secondary-a rounded-md">Buscar</button>
+                                <div className="flex flex-row items-center justify-center gap-5">
+                                    <button onClick={obtenerEstudiante} type="submit" className="px-4 py-2 rounded-md bg-primary text-secondary-a">Buscar</button>
                                     <IoPersonAdd size={35} onClick={() => { navigate("/agregar-estudiante") }} />
                                 </div>
                             </form>
                             :
                             <form action="" className="flex flex-col justify-center items-center gap-5 mx-auto max-w-[500px]">
                                 <input value={codigo} onChange={(e) => { setCodigo(e.target.value) }} className="outline-none border-b-[1px] border-solid border-[#000] p-1 w-[80%]" type="text" placeholder="Ingresar código del libro" />
-                                <button onClick={obtenerLibro} type="submit" className="bg-primary py-2 px-4 text-secondary-a rounded-md">Buscar</button>
+                                <button onClick={obtenerLibro} type="submit" className="px-4 py-2 rounded-md bg-primary text-secondary-a">Buscar</button>
                             </form>
                     }
                 </section>
@@ -203,8 +203,8 @@ const PrestamoView = () => {
                     estudiante ?
                         <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight rounded-md max-w-[700px] flex flex-row items-center justify-center gap-10">
                             <div>
-                                <h2 className="my-2 font-bold text-xl">Información del Estudiante</h2>
-                                <article className="flex flex-col justify-center items-center gap-2 text-center">
+                                <h2 className="my-2 text-xl font-bold">Información del Estudiante</h2>
+                                <article className="flex flex-col items-center justify-center gap-2 text-center">
                                     <h3>Nombre: {estudiante?.Nombre + " " + estudiante?.Paterno + " " + estudiante?.Materno}</h3>
                                     <h3>Correo: {estudiante?.Correo}</h3>
                                     <h3>Teléfono: {estudiante?.Telefono}</h3>
@@ -220,13 +220,13 @@ const PrestamoView = () => {
                 {
                     libro ?
                         <section className="shadow-md w-[90%] p-5 mx-auto animate-slideInRight rounded-md max-w-[700px]">
-                            <h2 className="font-bold text-xl my-2">Información del Libro</h2>
+                            <h2 className="my-2 text-xl font-bold">Información del Libro</h2>
 
-                            <article className="flex flex-row justify-center items-center gap-2">
+                            <article className="flex flex-row items-center justify-center gap-2">
                                 <picture>
                                     <img src={`${libro.LinkFoto}`} className="bg-blue-500 w-[100px] h-[120px] rounded-md" />
                                 </picture>
-                                <div className="flex flex-col justify-center items-center gap-2 text-center">
+                                <div className="flex flex-col items-center justify-center gap-2 text-center">
                                     <h3>Titulo: {libro.Titulo}</h3>
                                     <h3>Código: {libro.Codigo}</h3>
                                     <h3>Autor: {libro?.Nombre + " " + libro?.Paterno + " " + libro?.Materno}</h3>
@@ -243,13 +243,13 @@ const PrestamoView = () => {
                     libro && estudiante ?
                         <div className="animate-slideInRight w-[100%] flex flex-col items-center justify-center gap-5 rounded-md max-w-[700px]">
                             <section className="shadow-md w-[90%] p-5 mx-auto">
-                                <h2 className="text-xl font-bold my-2">Información de Entrega</h2>
-                                <div className="flex flex-row justify-center items-center gap-5">
+                                <h2 className="my-2 text-xl font-bold">Información de Entrega</h2>
+                                <div className="flex flex-row items-center justify-center gap-5">
                                     <p>Inicio: {inicio.toLocaleDateString()}</p>
                                     <p>Fin: {fechaAumentada}</p>
                                 </div>
                             </section>
-                            <button disabled={bloqueado} onClick={guardarPrestamo} className="bg-primary px-2 py-4 text-secondary-a rounded-md mb-5 hover:bg-primary/90">Guardar Prestamo</button>
+                            <button disabled={bloqueado} onClick={guardarPrestamo} className="px-2 py-4 mb-5 rounded-md bg-primary text-secondary-a hover:bg-primary/90">Guardar Prestamo</button>
                         </div>
                         :
                         ""

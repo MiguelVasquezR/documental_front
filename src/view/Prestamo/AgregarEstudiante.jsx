@@ -38,10 +38,10 @@ const AgregarEstudiante = () => {
                     <input className={`${styleInputs}`} type="text" placeholder="Apellido Materno*" {...register("Materno", { required: true })} />
                     <input className={`${styleInputs}`} type="number" placeholder="Teléfono*" {...register("Telefono", { required: true })} />
                     <input className={`${styleInputs}`} type="email" placeholder="Correo*" {...register("Correo", { required: true })} />
-                    <button type="submit" className="bg-primary text-secondary-a px-4 py-2 my-5 rounded-md">Guardar</button>
+                    <button type="submit" className="px-4 py-2 my-5 rounded-md bg-primary text-secondary-a">Guardar</button>
                 </form>
                 {
-                    error && <p className="bg-danger text-secondary-a p-1 text-center rounded-md">{error}</p>
+                    error && <p className="p-1 text-center rounded-md bg-danger text-secondary-a">{error}</p>
                 }
             </div>
         </>

@@ -122,7 +122,7 @@ const AgregarTexto = () => {
             <div className='w-[90%] mx-auto my-4 flex flex-row justify-center items-center gap-5'>
                 {dataImage ? <img className='w-[100px] h-[150px] rounded-sm' src={dataImage} /> : <div className='bg-[#f2f2f2] w-[100px] h-[150px] rounded-sm border-solid border-[1px] border-[#000]'></div>}
                 <input name="image" type="file" onChange={handleUploadImage} style={{ display: 'none' }} ref={fileInputRef} />
-                <div className='flex flex-col justify-center items-center gap-3'>
+                <div className='flex flex-col items-center justify-center gap-3'>
                     {
                         loading ? <BotonCargando text={text} /> : <button className='bg-primary text-secondary-a p-2 rounded-md w-[180px]' onClick={(e) => { e.preventDefault(); fileInputRef.current.click() }}>Seleccionar Portada</button>
                     }
@@ -160,7 +160,7 @@ const AgregarTexto = () => {
                     codeRepeat ? <p className='bg-red-500 w-[90%] text-secondary-a p-2 rounded-sm  text-center'>Texto no creado, el código ya existe</p> : ""
                 }
 
-                <button disabled={btnBloqueado} className='bg-primary px-5 py-3 rounded-md text-secondary-a m-3' type='submit'>Guardar</button>
+                <button disabled={btnBloqueado} className='px-5 py-3 m-3 rounded-md bg-primary text-secondary-a' type='submit'>Guardar</button>
 
                 {
                     isLoading ? <CargandoLibro /> : ""

@@ -77,7 +77,7 @@ const App = () => {
         <>
             <Header />
             <section className='py-4'>
-                <h2 className='text-right pr-8 font-bold tracking-wider'>{formattedDate}</h2>
+                <h2 className='pr-8 font-bold tracking-wider text-right'>{formattedDate}</h2>
                 <h2 className='p-4' >Próximas Devoluciones</h2>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>

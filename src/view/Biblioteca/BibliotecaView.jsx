@@ -74,7 +74,7 @@ const BibliotecaView = () => {
 
       {
         librosFiltrados.length === 0 &&
-        <div className='text-center font-bold text-2xl'>
+        <div className='text-2xl font-bold text-center'>
           <p>No hay resultado</p>
         </div>
       }
