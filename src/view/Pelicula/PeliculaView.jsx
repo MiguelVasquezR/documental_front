@@ -18,7 +18,7 @@ const PeliculaView = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data } = await axios.get(`httpsss://${import.meta.env.VITE_IP}/pelicula/listar`);
+                const { data } = await axios.get(`httpss://${import.meta.env.VITE_IP}/pelicula/listar`);
                 if (data.length !== 0) {
                     setPeliculas(data);
                 }
@@ -35,7 +35,7 @@ const PeliculaView = () => {
 
     const handleDeleteMovie = () => {
         if (isSelectedBook) {
-            axios.delete(`httpss://${import.meta.env.VITE_IP}/pelicula/eliminar?id=${isSelectedBook.ID}`)
+            axios.delete(`https://${import.meta.env.VITE_IP}/pelicula/eliminar?id=${isSelectedBook.ID}`)
                 .then(() => {
                     setPeliculas(peliculas.filter(pelicula => pelicula.ID !== isSelectedBook.ID));
                 })

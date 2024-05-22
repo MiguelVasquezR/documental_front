@@ -15,17 +15,18 @@ const Videoteca = () => {
             setLoading(true);
             try {
                 const [peliculasResponse, generosResponse] = await Promise.all([
-                    await axios.get(`https://${import.meta.env.VITE_IP}/pelicula/listar`),
-                    await axios.get(`https://${import.meta.env.VITE_IP}/genero/listar-generos`)
+                    await axios.get(`http://${import.meta.env.VITE_IP}/pelicula/listar`),
+                    await axios.get(`http://${import.meta.env.VITE_IP}/genero/listar-generos`)
                 ]);
 
-                if(peliculasResponse.data.length === 0){
+                if (peliculasResponse === null && !generosResponse === null) {
                     setLoading(false);
+                    setPeliculas([]);
                     return;
                 }
-
                 setPeliculas(peliculasResponse.data);
                 setGeneros(generosResponse.data);
+
                 setLoading(false);
             } catch (error) {
                 console.log(error);
@@ -36,7 +37,7 @@ const Videoteca = () => {
     }, []);
 
     const filteredMovies = useMemo(() => {
-        return peliculas.filter(pelicula => pelicula.Titulo.toLowerCase().includes(search.toLowerCase()));
+        return peliculas ? peliculas.filter(pelicula => pelicula.Titulo.toLowerCase().includes(search.toLowerCase())) : "";
     }, [peliculas, search]);
 
     return (

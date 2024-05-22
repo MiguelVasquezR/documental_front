@@ -65,14 +65,14 @@ const AgregarTexto = () => {
                 LinkFoto: dataImage
             };
 
-            const { data: { ID: IDFoto } } = await axios.post(`https://${import.meta.env.VITE_IP}/foto/crear`, imageData);
+            const { data: { ID: IDFoto } } = await axios.post(`http://${import.meta.env.VITE_IP}/foto/crear`, imageData);
 
             const dataAutor = {
                 Nombre: data.Nombre,
                 Paterno: data.Paterno,
                 Materno: data.Materno
             };
-            const { data: { IDAutor } } = await axios.post(`https://${import.meta.env.VITE_IP}/autor/crear`, dataAutor);
+            const { data: { IDAutor } } = await axios.post(`http://${import.meta.env.VITE_IP}/autor/crear`, dataAutor);
 
             const dataLibro = {
                 Codigo: data.Codigo,
@@ -86,7 +86,7 @@ const AgregarTexto = () => {
                 LinkFoto: IDFoto,
                 Ubicacion: location
             };
-            const { data: { mensaje } } = await axios.post(`https://${import.meta.env.VITE_IP}/texto/crear`, dataLibro);
+            const { data: { mensaje } } = await axios.post(`http://${import.meta.env.VITE_IP}/texto/crear`, dataLibro);
 
             if (mensaje === "Texto creado") {
                 navigate('/texto');
