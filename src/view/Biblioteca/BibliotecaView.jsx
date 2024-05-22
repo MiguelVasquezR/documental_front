@@ -22,7 +22,7 @@ const BibliotecaView = () => {
 
   useEffect(() => {
     setLoaging(true);
-    axios.get(`http://${import.meta.env.VITE_IP}/texto/biblioteca`)
+    axios.get(`https://${import.meta.env.VITE_IP}/texto/biblioteca`)
       .then((res) => {
         if (res.data) {
           setLibros(res.data);

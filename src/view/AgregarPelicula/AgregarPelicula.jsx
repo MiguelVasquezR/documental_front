@@ -68,13 +68,13 @@ const AgregarPelicula = () => {
 
         try{
 
-            const {data: {IDAutor}} = await axios.post(`http://${import.meta.env.VITE_IP}/autor/crear`, dataAutor)
+            const {data: {IDAutor}} = await axios.post(`https://${import.meta.env.VITE_IP}/autor/crear`, dataAutor)
 
             const dataImage = {
                 LinkFoto: imageUrl
             }
 
-            const {data: {ID: IDFoto}} = await axios.post(`http://${import.meta.env.VITE_IP}/foto/crear`, dataImage)
+            const {data: {ID: IDFoto}} = await axios.post(`https://${import.meta.env.VITE_IP}/foto/crear`, dataImage)
 
             const informacion = {
                 ano: parseInt(data.ano),
@@ -86,7 +86,7 @@ const AgregarPelicula = () => {
                 IDAutor: IDAutor
             }
 
-            const {data: {IDPelicula}} = await axios.post(`http://${import.meta.env.VITE_IP}/pelicula/crear`, informacion)
+            const {data: {IDPelicula}} = await axios.post(`https://${import.meta.env.VITE_IP}/pelicula/crear`, informacion)
 
             console.log(generos);
 
@@ -95,7 +95,7 @@ const AgregarPelicula = () => {
                     Nombre: genero,
                     IDPelicula: IDPelicula
                 }
-                const {data: {mensaje}} = await axios.post(`http://${import.meta.env.VITE_IP}/genero/crear`, dataGenero)
+                const {data: {mensaje}} = await axios.post(`https://${import.meta.env.VITE_IP}/genero/crear`, dataGenero)
             });
 
             navigate('/pelicula');
