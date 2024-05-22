@@ -12,7 +12,7 @@ const AgregarEstudiante = () => {
     const [error, setError] = useState("");
 
     const onSubmit = (data) => {
-        axios.post(`http://${import.meta.env.VITE_IP}/estudiante/crear`, data)
+        axios.post(`httpss://${import.meta.env.VITE_IP}/estudiante/crear`, data)
             .then((res) => {                
                 if (res.data.mensaje === "Creado") {
                     navigate("/prestamo");

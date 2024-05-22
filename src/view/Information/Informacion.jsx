@@ -22,7 +22,7 @@ const Información = () => {
     }
 
     useEffect(() => {
-        axios.get(`http://${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
+        axios.get(`httpss://${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
             .then((res) => {
                 setData(res.data);
                 setUbiacion(JSON.parse(res.data.Ubicacion));
