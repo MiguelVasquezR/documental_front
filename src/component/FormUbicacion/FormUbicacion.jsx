@@ -3,12 +3,12 @@ import Ubicacion from '../Ubicacion/Ubicacion';
 
 
 const FormUbicacion = ({ handleGetLocation }) => {
-    const [repisa, setRepisa] = useState('');
+    const [repisa, setRepisa] = useState("null");
     const [fila, setFila] = useState('');
     const [columna, setColumna] = useState('');
 
     useEffect(() => {
-        handleGetLocation(repisa, fila, columna);
+        if(repisa !== ''){handleGetLocation(repisa, fila, columna);}
     }, [fila])
 
     const handleContadorCaracteres = (e) => {
@@ -17,15 +17,16 @@ const FormUbicacion = ({ handleGetLocation }) => {
     }
 
     return (
-        <section className=''>
-
+        <section>
 
             <legend>Ubicación</legend>
+
             <select value={repisa} onChange={(e) => setRepisa(e.target.value)} className='w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2 outline-none'>
-                <option value="">Seleccione una repisa</option>
+                <option value="null">Seleccione una repisa</option>
                 <option value="1">Repisa 1</option>
                 <option value="2">Repisa 2</option>
             </select>
+
             <input
                 value={columna}
                 onChange={(e) => setColumna(e.target.value)}
@@ -34,6 +35,7 @@ const FormUbicacion = ({ handleGetLocation }) => {
                 onInput={handleContadorCaracteres}
                 placeholder='Columna *'
             />
+
             <input
                 value={fila}
                 onChange={(e) => setFila(e.target.value)}
@@ -43,7 +45,8 @@ const FormUbicacion = ({ handleGetLocation }) => {
                 placeholder='Fila *'
             />
 
-            {repisa === '1' ? <Ubicacion col={columna} row={fila} size={4} /> : <Ubicacion col={columna} row={fila} size={6} />}
+            {repisa !== "null" ? repisa === '1' ? <Ubicacion col={columna} row={fila} size={4} /> : <Ubicacion col={columna} row={fila} size={6} /> : null}
+
         </section>
     );
 };

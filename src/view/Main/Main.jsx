@@ -87,9 +87,8 @@ const App = () => {
                                 if (p.Estado !== "Devuelto") {
                                     return <CardPrestamo key={index} p={p} />
                                 } else {
-                                    return ""
+                                    return <p className='mx-auto my-5 font-bold'>No hay libros por devolver</p>
                                 }
-
                             }) : null
                     }
                 </div>

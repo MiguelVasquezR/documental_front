@@ -20,11 +20,9 @@ const AgregarTexto = () => {
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false)
-
     const [dataImage, setDataImage] = useState();
     const [location, setLocation] = useState({});
     const [codeRepeat, setCodeRepeat] = useState(false);
-
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("Cargando...");
     const fileInputRef = useRef(null);
@@ -48,6 +46,10 @@ const AgregarTexto = () => {
 
     const handleSave = async (data) => {
         setBtnBloqueado(true);
+
+        if (location === null) {
+            return;
+        }
 
         if (!dataImage || dataImage === undefined) {
             console.log('No se ha ejecutado el handleSave');
@@ -104,8 +106,10 @@ const AgregarTexto = () => {
     };
 
     const handleLocation = (repisa, fila, columna) => {
-        if (repisa && fila && columna) {
+        if (repisa && fila && columna && repisa !== '') {
             setLocation({ repisa, fila, columna });
+        } else {
+            setLoading(null)
         }
     }
 
@@ -117,8 +121,6 @@ const AgregarTexto = () => {
     return (
         <>
             <Header />
-
-
             <div className='w-[90%] mx-auto my-4 flex flex-row justify-center items-center gap-5'>
                 {dataImage ? <img className='w-[100px] h-[150px] rounded-sm' src={dataImage} /> : <div className='bg-[#f2f2f2] w-[100px] h-[150px] rounded-sm border-solid border-[1px] border-[#000]'></div>}
                 <input name="image" type="file" onChange={handleUploadImage} style={{ display: 'none' }} ref={fileInputRef} />
@@ -130,7 +132,6 @@ const AgregarTexto = () => {
             </div>
 
             <form onSubmit={handleSubmit(handleSave)} className='w-[90%] mx-auto flex flex-col justify-center items-center gap-4'>
-
 
                 <fieldset className='flex flex-col justify-center items-center gap-4 w-[90%]'>
                     <legend className='p-3 text-lg font-bold'>Información del Libro</legend>
