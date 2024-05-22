@@ -15,8 +15,8 @@ const Videoteca = () => {
             setLoading(true);
             try {
                 const [peliculasResponse, generosResponse] = await Promise.all([
-                    await axios.get(`http://${import.meta.env.VITE_IP}/pelicula/listar`),
-                    await axios.get(`http://${import.meta.env.VITE_IP}/genero/listar-generos`)
+                    await axios.get(`https://${import.meta.env.VITE_IP}/pelicula/listar`),
+                    await axios.get(`https://${import.meta.env.VITE_IP}/genero/listar-generos`)
                 ]);
 
                 if (peliculasResponse === null && !generosResponse === null) {

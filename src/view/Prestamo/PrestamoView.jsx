@@ -61,7 +61,7 @@ const PrestamoView = () => {
             IDEstudiante: estudiante.ID
         }
 
-        axios.post(`http://${import.meta.env.VITE_IP}/prestamo/crear`, data)
+        axios.post(`https://${import.meta.env.VITE_IP}/prestamo/crear`, data)
             .then((res) => {
                 navigate("/");
             })
@@ -73,7 +73,7 @@ const PrestamoView = () => {
 
     const obtenerEstudiante = (e) => {
         e.preventDefault();
-        axios.get(`http://${import.meta.env.VITE_IP}/estudiante/matricula?matricula=${matricula}`)
+        axios.get(`https://${import.meta.env.VITE_IP}/estudiante/matricula?matricula=${matricula}`)
             .then((res) => {
                 if (res.data !== null) {
                     setEstudiante(res.data);
@@ -99,7 +99,7 @@ const PrestamoView = () => {
     const obtenerLibro = (e) => {
         e.preventDefault();
 
-        axios.get(`http://${import.meta.env.VITE_IP}/texto/codigo?codigo=${codigo}`)
+        axios.get(`https://${import.meta.env.VITE_IP}/texto/codigo?codigo=${codigo}`)
             .then((res) => {
                 if (res.data.mensaje === "No existe el libro") {
                     setMensaje(res.data.mensaje);
@@ -144,7 +144,7 @@ const PrestamoView = () => {
 
         console.log(data);
 
-        axios.put(`http://${import.meta.env.VITE_IP}/estudiante/editar`, data)
+        axios.put(`https://${import.meta.env.VITE_IP}/estudiante/editar`, data)
             .then((res) => {
                 setEstudiante(res.data);
                 setShowForm(false);

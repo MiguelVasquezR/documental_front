@@ -34,7 +34,7 @@ const EditarTexto = () => {
     const [columna, setColumna] = useState('');
 
     useEffect(() => {
-        axios.get(`http://${import.meta.env.VITE_IP}/texto/by-codigo?codigo=${codigo}`)
+        axios.get(`https://${import.meta.env.VITE_IP}/texto/by-codigo?codigo=${codigo}`)
             .then(({ data }) => { setTexto(data); })
             .catch(error => console.error('Error al obtener el texto:', error));
     }, [codigo]);
@@ -58,7 +58,7 @@ const EditarTexto = () => {
             Materno: texto.Materno,
         };
         
-        await axios.put(`http://${import.meta.env.VITE_IP}/autor/editar`, autor)
+        await axios.put(`https://${import.meta.env.VITE_IP}/autor/editar`, autor)
         .then(({data}) => {console.log(data);})
         .catch(error => console.error('Error al editar el autor:', error));
 
@@ -80,7 +80,7 @@ const EditarTexto = () => {
             Ubicacion: JSON.stringify(ubi)
         }
 
-        await axios.put(`http://${import.meta.env.VITE_IP}/texto/editar`, dataTexto)
+        await axios.put(`https://${import.meta.env.VITE_IP}/texto/editar`, dataTexto)
         .then(({data}) => {console.log(data);})
         .catch(error => console.error('Error al editar el texto:', error));
 

@@ -12,7 +12,7 @@ const Texto = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`http://${import.meta.env.VITE_IP}/texto/informacion-tabla`)
+        axios.get(`https://${import.meta.env.VITE_IP}/texto/informacion-tabla`)
             .then((res) => {
                 setLibros(res.data);
             })
@@ -22,7 +22,7 @@ const Texto = () => {
     }, []);
 
     const handleDeleteBook = useCallback(() => {
-        axios.delete(`http://${import.meta.env.VITE_IP}/texto/eliminar?id=${isSelectedBook.IDTexto}`)
+        axios.delete(`https://${import.meta.env.VITE_IP}/texto/eliminar?id=${isSelectedBook.IDTexto}`)
             .then((res) => {
                 setLibros(libros.filter(libro => libro.IDTexto !== isSelectedBook.IDTexto));
             })
