@@ -16,7 +16,7 @@ const App = () => {
     const [prestamo, setPrestamo] = useState([]);
 
     useEffect(() => {
-        axios.get(`httpss://${import.meta.env.VITE_IP}/prestamo/listar`)
+        axios.get(`https://${import.meta.env.VITE_IP}/prestamo/listar`)
             .then((res) => {
                 if (res.data) {
                     setPrestamo(res.data);
@@ -36,7 +36,7 @@ const App = () => {
         const [t, setT] = useState(null);
 
         useEffect(() => {
-            axios.get(`httpss://${import.meta.env.VITE_IP}/estudiante/id?id=${p.IDEstudiante}`)
+            axios.get(`https://${import.meta.env.VITE_IP}/estudiante/id?id=${p.IDEstudiante}`)
                 .then((res) => {
                     setE(res.data);
                 })
@@ -44,7 +44,7 @@ const App = () => {
                     console.log(err)
                 })
 
-            axios.get(`httpss://${import.meta.env.VITE_IP}/texto/prestamo?id=${p.IDTexto}`)
+            axios.get(`https://${import.meta.env.VITE_IP}/texto/prestamo?id=${p.IDTexto}`)
                 .then((res) => {
                     setT(res.data);
                 })
