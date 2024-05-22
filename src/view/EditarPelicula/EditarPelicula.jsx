@@ -30,7 +30,7 @@ const EditarPelicula = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data } = await axios.get(`http://${import.meta.env.VITE_IP}/pelicula/by-codigo?codigo=${codigo}`);
+                const { data } = await axios.get(`httpss://${import.meta.env.VITE_IP}/pelicula/by-codigo?codigo=${codigo}`);
                 setPelicula(data);
             } catch (error) {
                 console.error('Error al obtener la película:', error);
@@ -49,7 +49,7 @@ const EditarPelicula = () => {
             Materno: pelicula.Materno,
         };
 
-        await axios.put(`http://${import.meta.env.VITE_IP}/autor/editar`, autor)
+        await axios.put(`https://${import.meta.env.VITE_IP}/autor/editar`, autor)
             .then((res) => {
                 console.log(res.data);
             })
@@ -69,7 +69,7 @@ const EditarPelicula = () => {
 
         console.log(peliculaData);
 
-        await axios.put(`http://${import.meta.env.VITE_IP}/pelicula/editar`, peliculaData)
+        await axios.put(`https://${import.meta.env.VITE_IP}/pelicula/editar`, peliculaData)
             .then((res) => {
                 navigate('/pelicula'); 
             })

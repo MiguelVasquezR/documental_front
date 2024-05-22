@@ -7,7 +7,7 @@ const Cargando = () => {
 
             <div className="book-wrapper">
                 <svg
-                    xmlns="https://www.w3.org/2000/svg"
+                    xmlns="httpss://www.w3.org/2000/svg"
                     fill="white"
                     viewBox="0 0 126 75"
                     className="book"
@@ -55,7 +55,7 @@ const Cargando = () => {
                 </svg>
 
                 <svg
-                    xmlns="https://www.w3.org/2000/svg"
+                    xmlns="httpss://www.w3.org/2000/svg"
                     fill="#ffffff74"
                     viewBox="0 0 65 75"
                     className="book-page"

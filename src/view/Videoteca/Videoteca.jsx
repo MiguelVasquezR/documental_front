@@ -19,13 +19,14 @@ const Videoteca = () => {
                     await axios.get(`http://${import.meta.env.VITE_IP}/genero/listar-generos`)
                 ]);
 
-                if(peliculasResponse.data.length === 0){
+                if (peliculasResponse === null && !generosResponse === null) {
                     setLoading(false);
+                    setPeliculas([]);
                     return;
                 }
-
                 setPeliculas(peliculasResponse.data);
                 setGeneros(generosResponse.data);
+
                 setLoading(false);
             } catch (error) {
                 console.log(error);
@@ -36,7 +37,7 @@ const Videoteca = () => {
     }, []);
 
     const filteredMovies = useMemo(() => {
-        return peliculas.filter(pelicula => pelicula.Titulo.toLowerCase().includes(search.toLowerCase()));
+        return peliculas ? peliculas.filter(pelicula => pelicula.Titulo.toLowerCase().includes(search.toLowerCase())) : "";
     }, [peliculas, search]);
 
     return (
@@ -48,7 +49,7 @@ const Videoteca = () => {
                     <Lupa color={'black'} w={28} />
                 </div>
             </div>
-            <section className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-5 px-5'>
+            <section className='grid grid-cols-1 gap-5 px-5 mb-5 md:grid-cols-2 xl:grid-cols-3'>
                 {filteredMovies.length > 0 && (
                     filteredMovies.map((pelicula, index) => (
                         <div key={index} className='w-[360px] h-[220px] shadow-md rounded-md grid grid-cols-2 gap-3 mx-auto'>
@@ -73,7 +74,7 @@ const Videoteca = () => {
                                 </div>
                                 <section>
                                     <h4 className='text-[12px] font-bold'>Género</h4>
-                                    <div className='flex flex-row justify-center items-center gap-1'>
+                                    <div className='flex flex-row items-center justify-center gap-1'>
                                         {generos
                                             .filter((genero) => genero.IDPelicula === pelicula.ID && genero.Nombre !== '')
                                             .map((genero, index) => (
@@ -91,7 +92,7 @@ const Videoteca = () => {
             </section>
             {
                 filteredMovies.length === 0 &&
-                <div className='text-center text-2xl font-bold'>
+                <div className='text-2xl font-bold text-center'>
                     <p>No hay resultados</p>
                 </div>
             }
