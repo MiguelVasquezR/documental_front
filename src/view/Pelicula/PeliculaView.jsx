@@ -4,6 +4,10 @@ import Header from '../../component/Header/Header';
 import axios from 'axios';
 import { MdEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
+import IsLogin from '../../hooks/IsLogin';
+
+
+import { getMovies, deleteMovie } from '../../FirebaseService/MovieService';
 
 const PeliculaView = () => {
     const [peliculas, setPeliculas] = useState([]);
@@ -12,42 +16,36 @@ const PeliculaView = () => {
     const navigate = useNavigate();
 
     const peliculaFiltradas = useMemo(() => {
-        return peliculas.filter(pelicula => pelicula.Titulo.toLowerCase().includes(search.toLowerCase()));
+        return peliculas.filter(pelicula => pelicula.titulo?.toLowerCase().includes(search.toLowerCase()));
     }, [peliculas, search]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { data } = await axios.get(`httpsss://${import.meta.env.VITE_IP}/pelicula/listar`);
-                if (data.length !== 0) {
-                    setPeliculas(data);
-                }
-            } catch (error) {
-                console.error('Error al obtener las películas:', error);
-            }
-        };
-        fetchData();
+        const fetch = async () => {
+            const data = await getMovies();
+            setPeliculas(data);    
+        }
+        fetch();
     }, []);
 
     const handleMovieClick = useCallback((pelicula) => {
         setIsSelectedBook(pelicula);
     }, []);
 
-    const handleDeleteMovie = () => {
+    const handleDeleteMovie = async () => {
         if (isSelectedBook) {
-            axios.delete(`httpss://${import.meta.env.VITE_IP}/pelicula/eliminar?id=${isSelectedBook.ID}`)
-                .then(() => {
-                    setPeliculas(peliculas.filter(pelicula => pelicula.ID !== isSelectedBook.ID));
-                })
-                .catch((err) => {
-                    console.error('Error al eliminar la película:', err);
-                });
+            const res = await deleteMovie(isSelectedBook?.id);
+            if (res) {
+                setPeliculas(peliculas.filter(pelicula => pelicula.id !== isSelectedBook?.id));
+                setIsSelectedBook(null);
+            }else{
+                alert("Error al eliminar la película");
+            }
         }
     };
 
     const handleEditMovie = () => {
         if (isSelectedBook) {
-            navigate(`/pelicula/editar?codigo=${isSelectedBook.Codigo}`);
+            navigate(`/pelicula/editar?codigo=${isSelectedBook.id}`);
         }
     };
 
@@ -78,9 +76,9 @@ const PeliculaView = () => {
                     <tbody>
                         {peliculaFiltradas.map((pelicula, index) => (
                             <tr key={index} onClick={() => handleMovieClick(pelicula)} className={`my-[1px] ${isSelectedBook?.Codigo === pelicula.Codigo ? "bg-primary text-secondary-a" : ""}`}>
-                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.Codigo}</td>
-                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.Titulo}</td>
-                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.Nombre} {pelicula.Paterno} {pelicula.Materno}</td>
+                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.codigo}</td>
+                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.titulo}</td>
+                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula?.AUTOR?.Nombre} {pelicula?.AUTOR?.Paterno} {pelicula?.AUTOR?.Materno}</td>
                             </tr>
                         ))}
                     </tbody>

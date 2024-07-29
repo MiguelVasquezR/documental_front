@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoPersonAdd, IoCloseCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaUserEdit } from "react-icons/fa";
 
 import Header from "../../component/Header/Header";
+import IsLogin from "../../hooks/IsLogin";
+
+
+import {getStudentByTuition} from "../../FirebaseService/Studentservice";
 
 const PrestamoView = () => {
     const [bloqueado, setBloqueado] = useState(false);
@@ -26,6 +30,8 @@ const PrestamoView = () => {
     const fin = new Date();
     fin.setDate(fin.getDate() + 15);
     const fechaAumentada = `${('0' + fin.getDate()).slice(-2)}/${('0' + (fin.getMonth() + 1)).slice(-2)}/${fin.getFullYear()}`;
+
+    
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -61,7 +67,7 @@ const PrestamoView = () => {
             IDEstudiante: estudiante.ID
         }
 
-        axios.post(`https://${import.meta.env.VITE_IP}/prestamo/crear`, data)
+        axios.post(`http://${import.meta.env.VITE_IP}/prestamo/crear`, data)
             .then((res) => {
                 navigate("/");
             })
@@ -73,33 +79,18 @@ const PrestamoView = () => {
 
     const obtenerEstudiante = (e) => {
         e.preventDefault();
-        axios.get(`https://${import.meta.env.VITE_IP}/estudiante/matricula?matricula=${matricula}`)
-            .then((res) => {
-                if (res.data !== null) {
-                    setEstudiante(res.data);
 
-                    setNombre(res.data.Nombre);
-                    setApellidoPaterno(res.data.Paterno);
-                    setApellidoMaterno(res.data.Materno);
-                    setCorreo(res.data.Correo);
-                    setTelefono(res.data.Telefono);
+        getStudentByTuition()
 
-
-                    setPaso(2);
-                } else {
-                    setMensaje("Estudiante no encontrado");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                setMensaje("Error al buscar estudiante");
-            });
+        
+       
+            
     };
 
     const obtenerLibro = (e) => {
         e.preventDefault();
 
-        axios.get(`https://${import.meta.env.VITE_IP}/texto/codigo?codigo=${codigo}`)
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/codigo?codigo=${codigo}`)
             .then((res) => {
                 if (res.data.mensaje === "No existe el libro") {
                     setMensaje(res.data.mensaje);
@@ -144,7 +135,7 @@ const PrestamoView = () => {
 
         console.log(data);
 
-        axios.put(`https://${import.meta.env.VITE_IP}/estudiante/editar`, data)
+        axios.put(`http://${import.meta.env.VITE_IP}/estudiante/editar`, data)
             .then((res) => {
                 setEstudiante(res.data);
                 setShowForm(false);

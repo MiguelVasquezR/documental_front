@@ -1,23 +1,19 @@
 import { React, useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
-
 import Header from '../../component/Header/Header';
 import BotonCargando from '../../component/Loaders/BotonCargando/BotonCargando';
-
-import appFirebase from '../../hooks/AppFirebase'
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-const storage = getStorage(appFirebase);
-
 import Plus from '../../images/Plus';
-
 import { useNavigate } from 'react-router-dom';
+import { handleUploadImage, PORTADAS_PELICULAS } from '../../FirebaseService/StorageService';
+import { addMovie } from '../../FirebaseService/MovieService'
 
 
 
 const AgregarPelicula = () => {
     const [loading, setLoading] = useState(false);
     const [text, setText] = useState("Cargando...");
+
+    
     const [imageUrl, setImageUrl] = useState(null);
     const fileInputRef = useRef(null);
     const [origen, setOrigen] = useState();
@@ -39,71 +35,29 @@ const AgregarPelicula = () => {
         }
     };
 
-    const handleUploadImage = async (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setLoading(true);
-
-        const file = e.target.files[0];
-        const refArchivo = ref(storage, `portadasPeliculas/${file.name}`)
-        await uploadBytes(refArchivo, file)
-        const ulrImDesc = await getDownloadURL(refArchivo)
-
-        setImageUrl(ulrImDesc)
-        setText("Cargado");
-
-        console.log("Se ha terminado");
-
-    }
-
     const guardarPelicula = async (data) => {
         setBtnBloqueado(true);
-
-
-        const dataAutor = {
-            Nombre: data.nombre,
-            Paterno: data.paterno,
-            Materno: data.materno
+        const INFORMACION = {
+            anio: data.ano,
+            codigo: data.codigo,
+            titulo: data.titulo,
+            origen: origen,
+            portada: imageUrl,
+            tipo: tipo,
+            AUTOR: {
+                Nombre: data.nombre,
+                Paterno: data.paterno,
+                Materno: data.materno
+            },
+            GENEROS: [
+                ...generos
+            ]
         }
-
-        try{
-
-            const {data: {IDAutor}} = await axios.post(`https://${import.meta.env.VITE_IP}/autor/crear`, dataAutor)
-
-            const dataImage = {
-                LinkFoto: imageUrl
-            }
-
-            const {data: {ID: IDFoto}} = await axios.post(`https://${import.meta.env.VITE_IP}/foto/crear`, dataImage)
-
-            const informacion = {
-                ano: parseInt(data.ano),
-                codigo: data.codigo,
-                titulo: data.titulo,
-                origen: origen,
-                portada: IDFoto,
-                tipo: tipo,
-                IDAutor: IDAutor
-            }
-
-            const {data: {IDPelicula}} = await axios.post(`https://${import.meta.env.VITE_IP}/pelicula/crear`, informacion)
-
-            console.log(generos);
-
-            generos.forEach(async (genero) => {
-                const dataGenero = {
-                    Nombre: genero,
-                    IDPelicula: IDPelicula
-                }
-                const {data: {mensaje}} = await axios.post(`https://${import.meta.env.VITE_IP}/genero/crear`, dataGenero)
-            });
-
+        if(addMovie(INFORMACION)){
             navigate('/pelicula');
-
-        }catch(err){
-            console.log(err);
+        }else{
+            alert('Error al guardar la película');
         }
-
     }
 
     return (
@@ -114,7 +68,7 @@ const AgregarPelicula = () => {
 
                 <div className='w-[90%] mx-auto my-4 flex flex-row justify-center items-center gap-5'>
                     {imageUrl ? <img className='w-[100px] h-[150px] rounded-sm object-cover' src={imageUrl} /> : <div className='bg-[#f2f2f2] w-[100px] h-[150px] rounded-sm border-solid border-[1px] border-[#000]'></div>}
-                    <input name="image" type="file" onChange={handleUploadImage} style={{ display: 'none' }} ref={fileInputRef} />
+                    <input name="image" type="file" onChange={async (e)=>{const url = await handleUploadImage(e, PORTADAS_PELICULAS); setImageUrl(url)}} style={{ display: 'none' }} ref={fileInputRef} />
                     <div className='flex flex-col items-center justify-center gap-3'>
                         {
                             loading ? <BotonCargando text={text} /> : <button className='bg-primary text-secondary-a p-2 rounded-md w-[180px]' onClick={(e) => { e.preventDefault(); fileInputRef.current.click() }}>Seleccionar Portada</button>
@@ -162,7 +116,7 @@ const AgregarPelicula = () => {
                                 placeholder='Género *'
                                 className='border-b-[1px] border-solid outline-none border-[#000] p-1 w-[100%]'
                                 value={genero}
-                                onChange={(e) => {handleGeneroChange(index, e.target.value)}}
+                                onChange={(e) => { handleGeneroChange(index, e.target.value) }}
                             />
                         ))}
                         <div className='w-[50px] mx-auto' onClick={handleAddGenero}>

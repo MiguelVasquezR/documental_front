@@ -4,7 +4,7 @@ import Back from '../../images/ArrowLeft';
 
 import Header from '../../component/Header/Header';
 import Ubicacion from '../../component/Ubicacion/Ubicacion';
-
+import IsLogin from '../../hooks/IsLogin';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cargando from '../../component/Loaders/CargandoLibro/Cargando';
@@ -22,7 +22,10 @@ const Información = () => {
     }
 
     useEffect(() => {
-        axios.get(`https://${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
+        if(!IsLogin){
+            navigate('/login');
+          }
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/visualizar?id=${id}`)
             .then((res) => {
                 setData(res.data);
                 setUbiacion(JSON.parse(res.data.Ubicacion));
@@ -57,8 +60,6 @@ const Información = () => {
                                     <h2 className='text-sm'>{data?.Codigo}</h2>
                                     <h2 className='text-sm'>{data?.Nombre} {data?.Paterno} {data?.Materno}</h2>
                                     <h2 className='text-sm'>{data?.Tipo}</h2>
-                                    <h2 className='text-sm'>{data?.Disponibilidad}</h2>
-                                    <h2 className='text-sm'>{"Cantidad"}</h2>
                                 </article>
                             </div>
 

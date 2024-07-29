@@ -3,7 +3,7 @@ import axios from "axios";
 
 import Header from "../../component/Header/Header";
 import { useNavigate } from "react-router-dom";
-import { set } from "react-hook-form";
+import IsLogin from "../../hooks/IsLogin";
 
 const Devolucion = () => {
 
@@ -16,7 +16,7 @@ const Devolucion = () => {
 
     const obtenerPrestamo = (e) => {
         e.preventDefault();
-        axios.post(`https://${import.meta.env.VITE_IP}/prestamo/devolver?codigo=${codigo}`)
+        axios.post(`http://${import.meta.env.VITE_IP}/prestamo/devolver?codigo=${codigo}`)
             .then((res) => {
                 setPrestamo(res.data);
             })
@@ -25,13 +25,13 @@ const Devolucion = () => {
 
     useEffect(() => {
         if (prestamo === null) return;
-        axios.get(`https://${import.meta.env.VITE_IP}/estudiante/id?id=${prestamo?.IDEstudiante}`)
+        axios.get(`http://${import.meta.env.VITE_IP}/estudiante/id?id=${prestamo?.IDEstudiante}`)
             .then((res) => {
                 setEstudiante(res.data);
             })
             .catch((err) => { console.log(err) })
 
-        axios.get(`https://${import.meta.env.VITE_IP}/texto/by-codigo?codigo=${codigo}`)
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/by-codigo?codigo=${codigo}`)
             .then((res) => {
                 console.log(res.data);
                 setLibro(res.data);
@@ -42,7 +42,7 @@ const Devolucion = () => {
 
     const confirmarDevolucion = () => {
         setBtnBloqueado(true);
-        axios.put(`https://${import.meta.env.VITE_IP}/prestamo/confirmar-devolucion?id=${prestamo.ID}`)
+        axios.put(`http://${import.meta.env.VITE_IP}/prestamo/confirmar-devolucion?id=${prestamo.ID}`)
             .then((res) => {
                 console.log(res.data.mensaje);
 
@@ -51,6 +51,12 @@ const Devolucion = () => {
             })
             .catch((err) => { console.log(err); })
     }
+
+    useEffect(()=>{
+        if(!IsLogin){
+            navigate('/login');
+        }
+    }, [])
 
 
 

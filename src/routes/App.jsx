@@ -16,6 +16,9 @@ import PrestamoView from '../view/Prestamo/PrestamoView.jsx';
 import AgregarEstudiante from '../view/Prestamo/AgregarEstudiante.jsx';
 import Devolucion from '../view/Prestamo/Devolucion.jsx';
 import Videoteca from '../view/Videoteca/Videoteca.jsx';
+import Login from '../view/Login.jsx';
+import Error from '../view/Error.jsx';
+import Usuario from '../view/Usuario/Usuario.jsx';
 
 const router = createBrowserRouter([
     {
@@ -70,6 +73,21 @@ const router = createBrowserRouter([
         path: "/devolucion",
         element: <Devolucion />
     }
+
+    ,
+    {
+        path: "/login",
+        element: <Login />
+    },
+    {
+        path: "*",
+        element: <Error />
+    },
+    {
+        path: "/usuario",
+        element: <Usuario />
+    }
+
 ]);
 
 const App = () => {

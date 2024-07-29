@@ -3,20 +3,27 @@ import axios from 'axios';
 import Header from '../../component/Header/Header';
 import Lupa from '../../images/Lupa';
 import Cargando from '../../component/Loaders/CargandoLibro/Cargando';
+import IsLogin from '../../hooks/IsLogin';
+import { useNavigate } from 'react-router-dom';
 
 const Videoteca = () => {
     const [peliculas, setPeliculas] = useState([]);
     const [generos, setGeneros] = useState([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if(!IsLogin){
+            navigate('/login');
+        }
+
         const fetchData = async () => {
             setLoading(true);
             try {
                 const [peliculasResponse, generosResponse] = await Promise.all([
-                    await axios.get(`https://${import.meta.env.VITE_IP}/pelicula/listar`),
-                    await axios.get(`https://${import.meta.env.VITE_IP}/genero/listar-generos`)
+                    await axios.get(`http://${import.meta.env.VITE_IP}/pelicula/listar`),
+                    await axios.get(`http://${import.meta.env.VITE_IP}/genero/listar-generos`)
                 ]);
 
                 if (peliculasResponse === null && !generosResponse === null) {

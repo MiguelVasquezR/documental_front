@@ -1,28 +1,25 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import Header from "../../component/Header/Header";
-
 import { useForm } from 'react-hook-form';
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import IsLogin from "../../hooks/IsLogin";
+import { collection, addDoc, getFirestore, getDocs, doc, deleteDoc, getDoc } from 'firebase/firestore';
+import app from "../../hooks/AppFirebase";
+const db = getFirestore(app);
 
 const AgregarEstudiante = () => {
+
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
-    const onSubmit = (data) => {
-        axios.post(`httpss://${import.meta.env.VITE_IP}/estudiante/crear`, data)
-            .then((res) => {                
-                if (res.data.mensaje === "Creado") {
-                    navigate("/prestamo");
-                }else{
-                    setError(res.data.mensaje);
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+    const onSubmit = async (data) => {
+        const ref = await addDoc(collection(db, "students"), data);
+        if (ref.id) {
+            navigate("/prestamo");
+        } else {
+            setError("Error al agregar estudiante");
+        }
     }
 
     const styleInputs = "border-b-[1px] border-solid border-[#000] w-[100%] p-1 outline-none";

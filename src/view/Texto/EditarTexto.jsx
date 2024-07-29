@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../component/Header/Header';
 import CargandoLibro from '../../component/Loaders/CargandoLibro/Cargando';
 import Ubicacion from '../../component/Ubicacion/Ubicacion';
+import IsLogin from '../../hooks/IsLogin';
 
 const EditarTexto = () => {
     const stylesInputs = "border-b-[1px] w-[90%] p-1 outline-none";
@@ -33,8 +34,14 @@ const EditarTexto = () => {
     const [fila, setFila] = useState('');
     const [columna, setColumna] = useState('');
 
+    useEffect(()=>{
+        if(!IsLogin){
+            navigate('/login');
+        }
+    }, [])
+
     useEffect(() => {
-        axios.get(`https://${import.meta.env.VITE_IP}/texto/by-codigo?codigo=${codigo}`)
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/by-codigo?codigo=${codigo}`)
             .then(({ data }) => { setTexto(data); })
             .catch(error => console.error('Error al obtener el texto:', error));
     }, [codigo]);
@@ -58,7 +65,7 @@ const EditarTexto = () => {
             Materno: texto.Materno,
         };
         
-        await axios.put(`https://${import.meta.env.VITE_IP}/autor/editar`, autor)
+        await axios.put(`http://${import.meta.env.VITE_IP}/autor/editar`, autor)
         .then(({data}) => {console.log(data);})
         .catch(error => console.error('Error al editar el autor:', error));
 
@@ -80,7 +87,7 @@ const EditarTexto = () => {
             Ubicacion: JSON.stringify(ubi)
         }
 
-        await axios.put(`https://${import.meta.env.VITE_IP}/texto/editar`, dataTexto)
+        await axios.put(`http://${import.meta.env.VITE_IP}/texto/editar`, dataTexto)
         .then(({data}) => {console.log(data);})
         .catch(error => console.error('Error al editar el texto:', error));
 

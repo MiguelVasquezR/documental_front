@@ -2,6 +2,8 @@ import { React, useEffect, useState } from 'react'
 import axios from 'axios'
 
 import Header from '../../component/Header/Header'
+import IsLogin from '../../hooks/IsLogin'
+import { useNavigate } from 'react-router-dom'
 
 const App = () => {
 
@@ -11,12 +13,14 @@ const App = () => {
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     }
+    const navigate = useNavigate();
 
     const formattedDate = formatDate(new Date());
     const [prestamo, setPrestamo] = useState([]);
 
     useEffect(() => {
-        axios.get(`https://${import.meta.env.VITE_IP}/prestamo/listar`)
+        
+        axios.get(`http://${import.meta.env.VITE_IP}/prestamo/listar`)
             .then((res) => {
                 if (res.data) {
                     setPrestamo(res.data);
@@ -36,7 +40,7 @@ const App = () => {
         const [t, setT] = useState(null);
 
         useEffect(() => {
-            axios.get(`https://${import.meta.env.VITE_IP}/estudiante/id?id=${p.IDEstudiante}`)
+            axios.get(`http://${import.meta.env.VITE_IP}/estudiante/id?id=${p.IDEstudiante}`)
                 .then((res) => {
                     setE(res.data);
                 })
@@ -44,7 +48,7 @@ const App = () => {
                     console.log(err)
                 })
 
-            axios.get(`https://${import.meta.env.VITE_IP}/texto/prestamo?id=${p.IDTexto}`)
+            axios.get(`http://${import.meta.env.VITE_IP}/texto/prestamo?id=${p.IDTexto}`)
                 .then((res) => {
                     setT(res.data);
                 })

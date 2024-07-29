@@ -4,6 +4,7 @@ import axios from 'axios';
 import Header from '../../component/Header/Header';
 import { MdEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
+import IsLogin from '../../hooks/IsLogin';
 
 const Texto = () => {
     const [libros, setLibros] = useState([]);
@@ -12,7 +13,10 @@ const Texto = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`https://${import.meta.env.VITE_IP}/texto/informacion-tabla`)
+        if(!IsLogin){
+            navigate('/login');
+        }
+        axios.get(`http://${import.meta.env.VITE_IP}/texto/informacion-tabla`)
             .then((res) => {
                 setLibros(res.data);
             })
@@ -22,7 +26,7 @@ const Texto = () => {
     }, []);
 
     const handleDeleteBook = useCallback(() => {
-        axios.delete(`https://${import.meta.env.VITE_IP}/texto/eliminar?id=${isSelectedBook.IDTexto}`)
+        axios.delete(`http://${import.meta.env.VITE_IP}/texto/eliminar?id=${isSelectedBook.IDTexto}`)
             .then((res) => {
                 setLibros(libros.filter(libro => libro.IDTexto !== isSelectedBook.IDTexto));
             })

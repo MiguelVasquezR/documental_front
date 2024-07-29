@@ -12,10 +12,16 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 const storage = getStorage(appFirebase);
 
 import BotonCargando from '../../component/Loaders/BotonCargando/BotonCargando';
-
+import IsLogin from '../../hooks/IsLogin';
 
 
 const AgregarTexto = () => {
+    useEffect(()=>{
+        if(!IsLogin){
+            navigate('/login');
+        }
+    }, [])
+
     const stylesInputs = "border-b-[1px] w-[90%] p-1 outline-none";
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
@@ -65,14 +71,14 @@ const AgregarTexto = () => {
                 LinkFoto: dataImage
             };
 
-            const { data: { ID: IDFoto } } = await axios.post(`https://${import.meta.env.VITE_IP}/foto/crear`, imageData);
+            const { data: { ID: IDFoto } } = await axios.post(`http://${import.meta.env.VITE_IP}/foto/crear`, imageData);
 
             const dataAutor = {
                 Nombre: data.Nombre,
                 Paterno: data.Paterno,
                 Materno: data.Materno
             };
-            const { data: { IDAutor } } = await axios.post(`https://${import.meta.env.VITE_IP}/autor/crear`, dataAutor);
+            const { data: { IDAutor } } = await axios.post(`http://${import.meta.env.VITE_IP}/autor/crear`, dataAutor);
 
             const dataLibro = {
                 Codigo: data.Codigo,
@@ -86,7 +92,7 @@ const AgregarTexto = () => {
                 LinkFoto: IDFoto,
                 Ubicacion: location
             };
-            const { data: { mensaje } } = await axios.post(`https://${import.meta.env.VITE_IP}/texto/crear`, dataLibro);
+            const { data: { mensaje } } = await axios.post(`http://${import.meta.env.VITE_IP}/texto/crear`, dataLibro);
 
             if (mensaje === "Texto creado") {
                 navigate('/texto');
