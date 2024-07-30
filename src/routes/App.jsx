@@ -70,12 +70,6 @@ const router = createBrowserRouter([
         element: <AgregarEstudiante />
     },
     {
-        path: "/devolucion",
-        element: <Devolucion />
-    }
-
-    ,
-    {
         path: "/login",
         element: <Login />
     },

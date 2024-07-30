@@ -1,112 +1,115 @@
-import { React, useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import Header from '../../component/Header/Header';
+import { getLoans } from '../../FirebaseService/LoansService';
+import { LuBookUp2 } from "react-icons/lu";
 
-import Header from '../../component/Header/Header'
-import IsLogin from '../../hooks/IsLogin'
-import { useNavigate } from 'react-router-dom'
+import { updateStatus } from '../../FirebaseService/LoansService';
+
+import { IsLogin } from '../../FirebaseService/AuthService';
+import { useNavigate } from 'react-router-dom';
 
 const App = () => {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
+        }
+        );
+    })
+
 
     const formatDate = (date) => {
         const day = date.getDate();
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
-    }
-    const navigate = useNavigate();
+    };
 
-    const formattedDate = formatDate(new Date());
-    const [prestamo, setPrestamo] = useState([]);
+    const [prestamos, setPrestamos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        
-        axios.get(`http://${import.meta.env.VITE_IP}/prestamo/listar`)
-            .then((res) => {
-                if (res.data) {
-                    setPrestamo(res.data);
-                } else {
-                    setPrestamo(null);
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }, [])
+        const fetchLoans = async () => {
+            try {
+                const res = await getLoans();
+                setPrestamos(res);
+            } catch (err) {
+                setError('Error al obtener los préstamos');
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        fetchLoans();
+    }, []);
+
+    const formatTimestamp = (timestamp) => {
+        if (timestamp && timestamp.toDate) {
+            return timestamp.toDate().toLocaleDateString();
+        }
+        return 'Fecha no disponible';
+    };
+
+    const handleReturn = async (id) => {
+        updateStatus(id).then((res) => { console.log(res); })
+    }
 
     const CardPrestamo = ({ p }) => {
-
-        const [e, setE] = useState(null);
-        const [t, setT] = useState(null);
-
-        useEffect(() => {
-            axios.get(`http://${import.meta.env.VITE_IP}/estudiante/id?id=${p.IDEstudiante}`)
-                .then((res) => {
-                    setE(res.data);
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-
-            axios.get(`http://${import.meta.env.VITE_IP}/texto/prestamo?id=${p.IDTexto}`)
-                .then((res) => {
-                    setT(res.data);
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-
-        }, []);
-
-
         return (
-            <div className='w-[90%] h-[150px] max-w-[300px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
-
+            <div className='w-[500px] h-[150px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
                 <picture>
-                    <img src={`${t?.LinkFoto}`} className='object-cover rounded-md h-[120px] w-[100px]' />
+                    <img src={`${p?.Material?.Portada}`} alt="Portada" className='object-fill rounded-md h-[150px] w-[150px]' />
                 </picture>
-
                 <article className='text-center w-[50%]'>
-                    <p className='text-[12px]'>Titulo: {t?.Titulo}</p>
-                    <p className='text-[12px]'>Nombre: {e?.Nombre + " " + e?.Paterno + " " + e?.Materno}</p>
-                    <p className='text-[12px]'>Préstamo: {p.fechaPrestamo}</p>
-                    <p className='text-[12px]'>Devolución: {p.fechaRegreso}</p>
+                    <p className='text-[12px]'>Titulo: {p?.Material?.Titulo}</p>
+                    <p className='text-[12px]'>Nombre: {`${p?.Estudiante?.Nombre || ''} ${p?.Estudiante?.Paterno || ''} ${p?.Estudiante?.Materno || ''}`}</p>
+                    <p className='text-[12px]'>Correo: {p.Estudiante.Correo}</p>
+                    <p className='text-[12px]'>Telefono: {p.Estudiante.Telefono}</p>
+                    <p className='text-[12px]'>Préstamo: {formatTimestamp(p?.FechaInicio)}</p>
+                    <p className='text-[12px]'>Devolución: {formatTimestamp(p?.FechaFin)}</p>
                 </article>
 
+                <div className="flex flex-col items-center justify-center cursor-pointer" onClick={() => { handleReturn(p) }}>
+                    <LuBookUp2 size={40} />
+                    <h2 className="text-[12px]">Regresar</h2>
+                </div>
+
+
             </div>
-        )
-    }
+        );
+    };
 
     return (
         <>
             <Header />
             <section className='py-4'>
-                <h2 className='pr-8 font-bold tracking-wider text-right'>{formattedDate}</h2>
-                <h2 className='p-4' >Próximas Devoluciones</h2>
+                <h2 className='pr-8 font-bold tracking-wider text-right'>{formatDate(new Date())}</h2>
+                <h2 className='p-4'>Próximas Devoluciones</h2>
+
+                {loading && <p>Cargando...</p>}
+                {error && <p>{error}</p>}
 
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
                     {
-                        prestamo !== null ?
-                            prestamo.map((p, index) => {
-                                if (p.Estado !== "Devuelto") {
-                                    return <CardPrestamo key={index} p={p} />
-                                } else {
-                                    return <p className='mx-auto my-5 font-bold'>No hay libros por devolver</p>
-                                }
-                            }) : null
+                        prestamos.length > 0 ? (
+                            prestamos.filter(p => p.Estado !== "Devuelto").map((p, index) => (
+                                <CardPrestamo key={index} p={p} />
+                            ))
+                        ) : (
+                            <div className='w-[90%] h-[150px] max-w-[300px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
+                                <h2 className='text-center'>No hay préstamos pendientes</h2>
+                            </div>
+                        )
                     }
                 </div>
-
-                {
-                    prestamo.length === 0 ?
-                        <div className='w-[90%] h-[150px] max-w-[300px] shadow-md rounded-md flex flex-row justify-evenly items-center mx-auto animate-slideInUp'>
-                            <h2 className='text-center'>No hay préstamos pendientes</h2>
-                        </div> : ""
-                }
             </section>
-
         </>
-    )
-}
+    );
+};
 
 export default App;

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Header from '../../component/Header/Header';
 import { MdDelete } from "react-icons/md";
 import { FaUserEdit, FaEye, FaEyeSlash } from "react-icons/fa";
-import { deleteUser, addUser, getUsers, editUser, getUserByID } from '../../FirebaseService/UserService';
+import { deleteUser, addUser, editUser, getUserByID, getUsers } from '../../FirebaseService/UserService';
 import Loading from '../../component/Loaders/Oclock/Loading';
 
 
 
-import { createAccount } from '../../FirebaseService/AuthService';
+import { createAccount, getUsersAuth } from '../../FirebaseService/AuthService';
+import { useNavigate } from 'react-router-dom';
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 const Usuario = () => {
     const [users, setUsers] = useState([]);
@@ -17,14 +19,26 @@ const Usuario = () => {
     const [userID, setUserID] = useState(null);
 
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
+        }
+        );
+    })
 
     useEffect(() => {
         fetchUsers();
+        
         setIsLoading(false);
     }, []);
 
     const fetchUsers = async () => {
         const datos = await getUsers();
+        
         if (datos) {
             setUsers(datos);
         }
@@ -35,19 +49,6 @@ const Usuario = () => {
         const [password, setPassword] = useState('');
         const [tipoInput, setTipoInput] = useState(false);
 
-        useEffect(() => {
-            if (tipo === "Editar" && id) {
-                const fetchUser = async () => {
-                    const data = await getUserByID(id);
-                    if (data) {
-                        setUser(data.usuario);
-                        setPassword(data.password);
-                    }
-                };
-                fetchUser();
-            }
-        }, [id, tipo]);
-
         const saved = async (e) => {
             e.preventDefault();
             const data = {
@@ -57,6 +58,7 @@ const Usuario = () => {
 
             if (tipo === "Crear") {
                 if (await createAccount(data)) {
+                    addUser(data);
                     setIsCreating(false);
                     fetchUsers();
                 } else {
@@ -155,13 +157,11 @@ const Usuario = () => {
                                         <p>{user?.usuario}</p>
                                         <div className='flex flex-row gap-5'>
                                             <MdDelete onClick={() => { setIsDeleting(true); setUserID(user.id); }} className='cursor-pointer' size={35} />
-                                            <FaUserEdit onClick={() => { setIsEditing(true); setUserID(user.id); }} className='cursor-pointer' size={35} />
                                         </div>
                                     </div>
                                 ))
                         }
                         {isDeleting && <ModalEliminar />}
-                        {isEditing && <ModalInformacion id={userID} tipo='Editar' />}
                         {isCreating && <ModalInformacion tipo='Crear' />}
                     </section>
             }

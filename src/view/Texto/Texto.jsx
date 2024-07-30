@@ -4,7 +4,11 @@ import axios from 'axios';
 import Header from '../../component/Header/Header';
 import { MdEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
-import IsLogin from '../../hooks/IsLogin';
+
+import toast, { Toaster } from 'react-hot-toast';
+
+import { getTexts, deleteText } from '../../FirebaseService/TextService';
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 const Texto = () => {
     const [libros, setLibros] = useState([]);
@@ -13,31 +17,33 @@ const Texto = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!IsLogin){
-            navigate('/login');
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
         }
-        axios.get(`http://${import.meta.env.VITE_IP}/texto/informacion-tabla`)
-            .then((res) => {
-                setLibros(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        );
+    })
+
+    useEffect(() => {
+        getTexts().then((res) => { setLibros(res) })
     }, []);
 
     const handleDeleteBook = useCallback(() => {
-        axios.delete(`http://${import.meta.env.VITE_IP}/texto/eliminar?id=${isSelectedBook.IDTexto}`)
-            .then((res) => {
-                setLibros(libros.filter(libro => libro.IDTexto !== isSelectedBook.IDTexto));
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+
+        deleteText(isSelectedBook.id).then((res) => {
+            console.log(res);
+            if (res) {
+                toast.success('Libro eliminado con exito');
+                getTexts().then((res) => { setLibros(res) })
+            }
+        });
+
     }, [isSelectedBook, libros]);
 
     const handleEditBook = useCallback(() => {
         if (isSelectedBook) {
-            navigate(`/texto/editar?codigo=${isSelectedBook.Codigo}`);
+            navigate(`/texto/editar?codigo=${isSelectedBook.id}`);
         }
     }, [isSelectedBook, navigate]);
 
@@ -46,7 +52,7 @@ const Texto = () => {
     }, []);
 
     const librosFiltrados = useMemo(() => {
-        return libros ?  libros.filter(libro => libro.Titulo.toLowerCase().includes(search.toLowerCase())) : "";
+        return libros ? libros.filter(libro => libro.Titulo.toLowerCase().includes(search.toLowerCase())) : "";
     }, [libros, search]);
 
     return (
@@ -82,20 +88,26 @@ const Texto = () => {
 
                     <tbody>
 
-                        { librosFiltrados.length !== 0 ?
-                        librosFiltrados.map((libro, index) => (
-                            <tr key={index} onClick={() => handleBookClick(libro)} className={`my-[1px] ${isSelectedBook?.Codigo === libro.Codigo ? "bg-primary text-secondary-a" : ""}`}>
-                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Codigo}</td>
-                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Titulo}</td>
-                                <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Nombre + " " + libro.Paterno + " " + libro?.Materno}</td>
-                            </tr>
-                        ))
-                        :
-                        null
-                    }
+                        {librosFiltrados.length !== 0 ?
+                            librosFiltrados.map((libro, index) => (
+                                <tr key={index} onClick={() => handleBookClick(libro)} className={`my-[1px] ${isSelectedBook?.Codigo === libro.Codigo ? "bg-primary text-secondary-a" : ""}`}>
+                                    <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Codigo}</td>
+                                    <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro.Titulo}</td>
+                                    <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{libro?.AUTOR?.NOMBRE + " " + libro?.AUTOR?.PATERNO + " " + libro?.AUTOR?.MATERNO}</td>
+                                </tr>
+                            ))
+                            :
+                            null
+                        }
                     </tbody>
                 </table>
+
             </section>
+
+
+            <Toaster position='top-left' />
+
+
         </>
     );
 };

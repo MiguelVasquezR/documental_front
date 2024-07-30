@@ -4,16 +4,18 @@ const db = getFirestore(app);
 
 
 
-const getStudentByTuition = async (tuition) => {
+export const getStudentByTuition = async (tuition) => {
 
     try{
         const userCollection = collection(db, 'students');
-        const query = query(userCollection, where("matricula", "==", tuition));
-        const querySnapshot = await getDocs(query);
-
+        const response = query(userCollection, where("Matricula", "==", tuition));
+        const querySnapshot = await getDocs(response);
+        let responseData = null;
         querySnapshot.forEach((doc) => {
-            return doc.data();
+            responseData = doc.data();
         });
+
+        return responseData;
     }catch(error){
         console.log(error);
     }

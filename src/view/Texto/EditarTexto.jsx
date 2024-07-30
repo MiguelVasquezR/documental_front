@@ -5,170 +5,153 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../component/Header/Header';
 import CargandoLibro from '../../component/Loaders/CargandoLibro/Cargando';
 import Ubicacion from '../../component/Ubicacion/Ubicacion';
-import IsLogin from '../../hooks/IsLogin';
+
+import { getTextByID, updateText } from '../../FirebaseService/TextService';
+import toast, {Toaster} from 'react-hot-toast';
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 const EditarTexto = () => {
-    const stylesInputs = "border-b-[1px] w-[90%] p-1 outline-none";
-    const { register, handleSubmit } = useForm();
-    const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
-    const [ubicacion, setUbicacion] = useState({});
-    const [btnBloqueado, setBtnBloqueado] = useState(false);
-
-    const searchParams = new URLSearchParams(location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     const codigo = searchParams.get('codigo');
+    const { register, handleSubmit, setValue, watch } = useForm();
+    const [texto, setTexto] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [btnBloqueado, setBtnBloqueado] = useState(false);
+    const navigate = useNavigate();
 
-    const [texto, setTexto] = useState({
-        Codigo: '',
-        Titulo: '',
-        NumPaginas: '',
-        Tipo: '',
-        Ano: '',
-        Nombre: '',
-        Paterno: '',
-        Materno: '',
-        Resena: '',
-    });
-
-    const [repisa, setRepisa] = useState('');
-    const [fila, setFila] = useState('');
-    const [columna, setColumna] = useState('');
-
-    useEffect(()=>{
-        if(!IsLogin){
-            navigate('/login');
-        }
-    }, [])
+    const repisa = watch('repisa', '');
+    const fila = watch('fila', '');
+    const columna = watch('columna', '');
 
     useEffect(() => {
-        axios.get(`http://${import.meta.env.VITE_IP}/texto/by-codigo?codigo=${codigo}`)
-            .then(({ data }) => { setTexto(data); })
-            .catch(error => console.error('Error al obtener el texto:', error));
-    }, [codigo]);
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
+        }
+        );
+    })
 
     useEffect(() => {
-        if (texto) {
-            const { repisa, fila, columna } = JSON.parse(texto.Ubicacion || '{}');
-            setRepisa(repisa);
-            setFila(fila);
-            setColumna(columna);
-        }
-    }, [texto]);
+        getTextByID(codigo).then((res) => {
+            if (res) {
+                setTexto(res);
+                setValue('Codigo', res?.Codigo);
+                setValue('Titulo', res?.Titulo);
+                setValue('NumPaginas', res?.NumPaginas);
+                setValue('Tipo', res?.Tipo);
+                setValue('Ano', res?.Ano);
 
-    const handleSave = async () => {
-        setBtnBloqueado(true);
-
-        const autor = {
-            ID: texto.IDAutor,
-            Nombre: texto.Nombre,
-            Paterno: texto.Paterno,
-            Materno: texto.Materno,
-        };
-        
-        await axios.put(`http://${import.meta.env.VITE_IP}/autor/editar`, autor)
-        .then(({data}) => {console.log(data);})
-        .catch(error => console.error('Error al editar el autor:', error));
-
-        const ubi = {
-            repisa,
-            fila,
-            columna
-        }
-
-        const dataTexto = {
-            ID: texto.IDTexto,
-            Codigo: texto.Codigo,
-            Titulo: texto.Titulo,
-            NumPaginas: texto.NumPaginas,
-            Tipo: texto.Tipo,
-            Ano: texto.Ano,
-            Resena: texto.Resena,
-            IDAutor: texto.IDAutor,
-            Ubicacion: JSON.stringify(ubi)
-        }
-
-        await axios.put(`http://${import.meta.env.VITE_IP}/texto/editar`, dataTexto)
-        .then(({data}) => {console.log(data);})
-        .catch(error => console.error('Error al editar el texto:', error));
-
-        navigate('/texto');
-        
-
-    };
-
-    const handleContadorCaracteres = (e, max) => {
-        if (e.target.value.length > max) { e.target.value = e.target.value.slice(0, max); }
-    };
-
-    const handleInputChange = (e) => {
-        setTexto({
-            ...texto,
-            [e.target.name]: e.target.value
+                // Asegúrate de que los nombres de las propiedades coincidan
+                setValue('Nombre', res?.AUTOR?.NOMBRE || '');
+                setValue('Paterno', res?.AUTOR?.PATERNO || '');
+                setValue('Materno', res?.AUTOR?.MATERNO || '');
+                setValue('Resena', res?.Resena || '');
+                
+                setValue('repisa', res?.Ubicacion.repisa);
+                setValue('fila', res?.Ubicacion.fila);
+                setValue('columna', res?.Ubicacion.columna);
+            }
+        }).catch((err) => {
+            console.log(err);
         });
+    }, [codigo, setValue]);
+
+    const handleSave = async (data) => {
+        setIsLoading(true);
+        setBtnBloqueado(true);
+        
+        const dataSend = {
+            Codigo: data.Codigo,
+            Titulo: data.Titulo,
+            NumPaginas: data.NumPaginas,
+            Tipo: data.Tipo,
+            Ano: data.Ano,
+            Resena: data.Resena,
+            Ubicacion: {
+                repisa: repisa,
+                fila: fila,
+                columna: columna
+            },
+            AUTOR: {
+                NOMBRE: data?.Nombre,
+                PATERNO: data?.Paterno,
+                MATERNO: data?.Materno,
+            }
+        }
+
+        updateText(dataSend, texto.id).then((res)=>{
+            if(res){
+                navigate('/texto');
+            }else{
+                toast.error('Error al actualizar el libro');
+            }
+        })
+        
+       
     };
+
+    const stylesInputs = "border-b-[1px] w-[90%] p-1 outline-none";
 
     return (
         <>
             <Header />
 
             <form onSubmit={handleSubmit(handleSave)} className='w-[90%] mx-auto flex flex-col justify-center items-center gap-4'>
-
                 <fieldset className='flex flex-col justify-center items-center gap-4 w-[90%]'>
                     <legend className='p-3 text-lg font-bold'>Información del Libro</legend>
-                    <input value={texto.Codigo} required={true} name="Codigo" type="text" placeholder='Código' className={`${stylesInputs}`} onChange={handleInputChange} />
-                    <input value={texto.Titulo} required={true} name="Titulo" type="text" placeholder='Titulo' className={`${stylesInputs}`} onChange={handleInputChange} />
-                    <input value={texto.NumPaginas} required={true} name="NumPaginas" type="number" placeholder='Número de Páginas' className={`${stylesInputs}`} onInput={(e) => { handleContadorCaracteres(e, 6) }} onChange={handleInputChange} />
-                    <input value={texto.Tipo} required={true} name="Tipo" type="text" placeholder='Tipo' className={`${stylesInputs}`} onChange={handleInputChange} />
-                    <input value={texto.Ano} required={true} name="Ano" onInput={(e) => { handleContadorCaracteres(e, 4) }} type="number" placeholder='Año' className={`${stylesInputs}`} onChange={handleInputChange} />
+                    <input {...register('Codigo', { required: true })} type="text" placeholder='Código' className={`${stylesInputs}`} />
+                    <input {...register('Titulo', { required: true })} type="text" placeholder='Titulo' className={`${stylesInputs}`} />
+                    <input {...register('NumPaginas', { required: true })} type="number" placeholder='Número de Páginas' className={`${stylesInputs}`} />
+                    <input {...register('Tipo', { required: true })} type="text" placeholder='Tipo' className={`${stylesInputs}`} />
+                    <input {...register('Ano', { required: true })} type="number" placeholder='Año' className={`${stylesInputs}`} />
                 </fieldset>
 
                 <fieldset className='flex flex-col justify-center items-center gap-4 w-[90%]'>
                     <legend className='p-3 text-lg font-bold'>Información del Autor</legend>
-                    <input value={texto.Nombre}  required={true} name="Nombre" type="text" placeholder='Nombre' className={`${stylesInputs}`} onChange={handleInputChange} />
-                    <input value={texto.Paterno} required={true} name="Paterno" type="text" placeholder='Paterno' className={`${stylesInputs}`} onChange={handleInputChange} />
-                    <input value={texto.Materno} name="Materno" type="text" placeholder='Materno' className={`${stylesInputs}`} onChange={handleInputChange} />
+                    <input {...register('Nombre', { required: true })} type="text" placeholder='Nombre' className={`${stylesInputs}`} />
+                    <input {...register('Paterno', { required: true })} type="text" placeholder='Paterno' className={`${stylesInputs}`} />
+                    <input {...register('Materno')} type="text" placeholder='Materno' className={`${stylesInputs}`} />
                 </fieldset>
 
                 <fieldset className='flex flex-col justify-center items-center gap-4 w-[90%]'>
                     <legend className='p-3 text-lg font-bold'>Reseña</legend>
-                    <textarea value={texto.Resena} name="Resena" placeholder='Escribe tu Reseña' className='border-[1px] border-solid border-[#000] w-[90%] p-1 h-[200px] max-h-[500px] outline-none' onChange={handleInputChange}></textarea>
+                    <textarea {...register('Resena', { required: true })} placeholder='Escribe tu Reseña' className='border-[1px] border-solid border-[#000] w-[90%] p-1 h-[200px] max-h-[500px] outline-none'></textarea>
                 </fieldset>
 
                 <section className='w-[90%] mx-auto'>
-
                     <legend className='p-3 text-lg font-bold'>Ubicación</legend>
-                    <select value={repisa} onChange={(e) => setRepisa(e.target.value)} className='w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2 outline-none'>
+                    <select {...register('repisa', { required: true })} className='w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2 outline-none'>
                         <option value="">Seleccione una repisa</option>
                         <option value="1">Repisa 1</option>
                         <option value="2">Repisa 2</option>
                     </select>
                     <input
-                        value={columna}
-                        onChange={(e) => setColumna(e.target.value)}
+                        {...register('columna', { required: true })}
                         className='outline-none w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2'
                         type="number"
-                        onInput={handleContadorCaracteres}
                         placeholder='Columna *'
                     />
                     <input
-                        value={fila}
-                        onChange={(e) => setFila(e.target.value)}
+                        {...register('fila', { required: true })}
                         className='outline-none w-[100%] bg-transparent border-b-[1px] border-solid border-[#000] p-1 my-2'
                         type="number"
-                        onInput={handleContadorCaracteres}
                         placeholder='Fila *'
                     />
-
                     {repisa === '1' ? <Ubicacion col={columna} row={fila} size={4} /> : <Ubicacion col={columna} row={fila} size={6} />}
                 </section>
 
-                <button disabled={btnBloqueado} className='px-5 py-3 m-3 rounded-md bg-primary text-secondary-a' type='submit'>Guardar</button>
+                <button disabled={btnBloqueado || isLoading} className='px-5 py-3 m-3 rounded-md bg-primary text-secondary-a' type='submit'>
+                    {isLoading ? 'Guardando...' : 'Guardar'}
+                </button>
 
-                {isLoading ? <CargandoLibro /> : ""}
+                {isLoading && <CargandoLibro />}
             </form>
+
+            <Toaster position='top-left' />
+
         </>
-    )
+    );
 }
 
 export default EditarTexto;
-

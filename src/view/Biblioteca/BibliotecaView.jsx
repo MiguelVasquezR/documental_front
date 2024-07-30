@@ -5,14 +5,27 @@ import Header from '../../component/Header/Header';
 import CardItem from '../../component/CardItem/CardItem';
 import Lupa from '../../images/Lupa.jsx'
 import CargandoLibro from '../../component/Loaders/CargandoLibro/Cargando';
-import IsLogin from '../../hooks/IsLogin.js';
 import { useNavigate } from 'react-router-dom';
+
+
+import {getTexts} from '../../FirebaseService/TextService.js';
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 const BibliotecaView = () => {
   const [libros, setLibros] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoaging] = useState(false);
   const navigate = useNavigate();
+
+
+    useEffect(() => {
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
+        }
+        );
+    })
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -24,23 +37,8 @@ const BibliotecaView = () => {
   });
 
   useEffect(() => {
-    if(!IsLogin){
-      navigate('/login');
-    }
     setLoaging(true);
-    axios.get(`http://${import.meta.env.VITE_IP}/texto/biblioteca`)
-      .then((res) => {
-        if (res.data) {
-          setLibros(res.data);
-          setLoaging(false);
-        } else {
-          setLoaging(false);
-        }
-      })
-      .catch((err) => {
-        console.log("Error en la petición: " + err);
-        setLoaging(false);
-      })
+    getTexts().then((res)=>{setLibros(res)}).then(()=>{setLoaging(false)}).catch((err)=>{console.log(err)});
   }, [])
 
 

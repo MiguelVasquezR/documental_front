@@ -2,16 +2,25 @@ import React, { useEffect, useState } from "react";
 import Header from "../../component/Header/Header";
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
-import IsLogin from "../../hooks/IsLogin";
 import { collection, addDoc, getFirestore, getDocs, doc, deleteDoc, getDoc } from 'firebase/firestore';
 import app from "../../hooks/AppFirebase";
 const db = getFirestore(app);
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 const AgregarEstudiante = () => {
 
     const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
+        }
+        );
+    })
 
     const onSubmit = async (data) => {
         const ref = await addDoc(collection(db, "students"), data);

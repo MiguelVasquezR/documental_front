@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CiLogout } from "react-icons/ci";
 
 import Menu from '../../images/Menu'
@@ -7,8 +7,12 @@ import Menu from '../../images/Menu'
 import Logo from '../../images/Logo.png'
 import Close from '../../images/Close'
 
+
+import { logOut } from '../../FirebaseService/AuthService';
+
 const Header = () => {
     const [active, setActive] = useState(false)
+    const navigate = useNavigate();
 
     const handleClick = () => {
         setActive(!active);
@@ -16,8 +20,8 @@ const Header = () => {
 
 
     const handleLogout = () => {
-        localStorage.removeItem('usuario');
-        window.location.href = "/login";
+        logOut();
+        navigate('/login');
     }
 
     if (active) {
@@ -40,9 +44,6 @@ const Header = () => {
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
                         <Link to={"/prestamo"}>Prestamo</Link>
-                    </li>
-                    <li className='p-4 text-lg font-bold text-center' >
-                        <Link to={"/devolucion"}>Devoluciones</Link>
                     </li>
                     <li className='p-4 text-lg font-bold text-center' >
                         <Link to={"/texto"}>Libros</Link>
@@ -79,9 +80,6 @@ const Header = () => {
                         </li>
                         <li className='p-4 text-lg font-bold text-center' >
                             <Link to={"/prestamo"}>Prestamo</Link>
-                        </li>
-                        <li className='p-4 text-lg font-bold text-center' >
-                            <Link to={"/devolucion"}>Devoluciones</Link>
                         </li>
                         <li className='p-4 text-lg font-bold text-center' >
                             <Link to={"/texto"}>Libros</Link>

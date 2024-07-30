@@ -4,16 +4,27 @@ import Header from '../../component/Header/Header';
 import axios from 'axios';
 import { MdEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
-import IsLogin from '../../hooks/IsLogin';
 
+
+import toast, {Toaster} from 'react-hot-toast';
 
 import { getMovies, deleteMovie } from '../../FirebaseService/MovieService';
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 const PeliculaView = () => {
     const [peliculas, setPeliculas] = useState([]);
     const [search, setSearch] = useState('');
     const [isSelectedBook, setIsSelectedBook] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
+        }
+        );
+    })
 
     const peliculaFiltradas = useMemo(() => {
         return peliculas.filter(pelicula => pelicula.titulo?.toLowerCase().includes(search.toLowerCase()));
@@ -35,10 +46,11 @@ const PeliculaView = () => {
         if (isSelectedBook) {
             const res = await deleteMovie(isSelectedBook?.id);
             if (res) {
+                toast.success("Película eliminada correctamente");
                 setPeliculas(peliculas.filter(pelicula => pelicula.id !== isSelectedBook?.id));
                 setIsSelectedBook(null);
             }else{
-                alert("Error al eliminar la película");
+                toast.error("Error al eliminar la película");
             }
         }
     };
@@ -75,7 +87,7 @@ const PeliculaView = () => {
                     </thead>
                     <tbody>
                         {peliculaFiltradas.map((pelicula, index) => (
-                            <tr key={index} onClick={() => handleMovieClick(pelicula)} className={`my-[1px] ${isSelectedBook?.Codigo === pelicula.Codigo ? "bg-primary text-secondary-a" : ""}`}>
+                            <tr key={index} onClick={() => handleMovieClick(pelicula)} className={`my-[1px] ${isSelectedBook?.codigo === pelicula.codigo ? "bg-primary text-secondary-a" : ""}`}>
                                 <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.codigo}</td>
                                 <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula.titulo}</td>
                                 <td className='text-center p-1 border-[1px] border-[#c2c2c2] border-solid'>{pelicula?.AUTOR?.Nombre} {pelicula?.AUTOR?.Paterno} {pelicula?.AUTOR?.Materno}</td>
@@ -84,6 +96,8 @@ const PeliculaView = () => {
                     </tbody>
                 </table>
             </section>
+
+            <Toaster position='top-left'/>
         </>
     );
 };

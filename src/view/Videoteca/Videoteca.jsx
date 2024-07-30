@@ -2,9 +2,12 @@ import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import Header from '../../component/Header/Header';
 import Lupa from '../../images/Lupa';
-import Cargando from '../../component/Loaders/CargandoLibro/Cargando';
-import IsLogin from '../../hooks/IsLogin';
+import Cargando from '../../component/Loaders/CargandoLibro/Cargando'
 import { useNavigate } from 'react-router-dom';
+import { IsLogin } from '../../FirebaseService/AuthService';
+
+
+import { getMovies } from '../../FirebaseService/MovieService';
 
 const Videoteca = () => {
     const [peliculas, setPeliculas] = useState([]);
@@ -14,37 +17,21 @@ const Videoteca = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if(!IsLogin){
-            navigate('/login');
-        }
-
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const [peliculasResponse, generosResponse] = await Promise.all([
-                    await axios.get(`http://${import.meta.env.VITE_IP}/pelicula/listar`),
-                    await axios.get(`http://${import.meta.env.VITE_IP}/genero/listar-generos`)
-                ]);
-
-                if (peliculasResponse === null && !generosResponse === null) {
-                    setLoading(false);
-                    setPeliculas([]);
-                    return;
-                }
-                setPeliculas(peliculasResponse.data);
-                setGeneros(generosResponse.data);
-
-                setLoading(false);
-            } catch (error) {
-                console.log(error);
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
             }
-        };
+        }
+        );
+    })
 
-        fetchData();
+    useEffect(() => {
+        setLoading(true);
+        getMovies().then((res) => { setPeliculas(res); console.log(res); }).then(() => { setLoading(false) }).catch((err) => { console.log(err) });
     }, []);
 
     const filteredMovies = useMemo(() => {
-        return peliculas ? peliculas.filter(pelicula => pelicula.Titulo.toLowerCase().includes(search.toLowerCase())) : "";
+        return peliculas ? peliculas.filter(pelicula => pelicula?.titulo.toLowerCase().includes(search?.toLowerCase())) : "";
     }, [peliculas, search]);
 
     return (
@@ -60,35 +47,32 @@ const Videoteca = () => {
                 {filteredMovies.length > 0 && (
                     filteredMovies.map((pelicula, index) => (
                         <div key={index} className='w-[360px] h-[220px] shadow-md rounded-md grid grid-cols-2 gap-3 mx-auto'>
-                            <img src={pelicula.LinkFoto} className='h-[220px] w-[200px] object-fill rounded-md' />
+                            <img src={pelicula.portada} className='h-[220px] w-[200px] object-fill rounded-md' />
                             <article className='flex flex-col justify-center gap-1'>
-                                <p className='text-[12px] font-bold'>{pelicula.Titulo}</p>
+                                <p className='text-[12px] font-bold'>{pelicula.titulo}</p>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Código:</p>
-                                    <p className='text-[10px]'>{pelicula.Codigo}</p>
+                                    <p className='text-[10px]'>{pelicula.codigo}</p>
                                 </div>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Autor:</p>
-                                    <p className='text-[10px]'>{pelicula.Nombre + " " + pelicula.Paterno + " " + pelicula?.Materno}</p>
+                                    <p className='text-[10px]'>{pelicula?.AUTOR?.Nombre + " " + pelicula?.AUTOR?.Paterno + " " + pelicula?.AUTOR?.Materno}</p>
                                 </div>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Formato:</p>
-                                    <p className='text-[10px]'>{pelicula.Tipo}</p>
+                                    <p className='text-[10px]'>{pelicula.tipo}</p>
                                 </div>
                                 <div>
                                     <p className='text-[8px] text-[#000]/50'>Tipo:</p>
-                                    <p className='text-[10px]'>{pelicula.Proviene}</p>
+                                    <p className='text-[10px]'>{pelicula.origen}</p>
                                 </div>
                                 <section>
                                     <h4 className='text-[12px] font-bold'>Género</h4>
                                     <div className='flex flex-row items-center justify-center gap-1'>
-                                        {generos
-                                            .filter((genero) => genero.IDPelicula === pelicula.ID && genero.Nombre !== '')
-                                            .map((genero, index) => (
-                                                <p key={index} className='text-[8px] bg-primary p-1 rounded-md text-secondary-a mt-1'>
-                                                    {genero.Nombre}
-                                                </p>
-                                            ))}
+                                        {
+
+                                            pelicula.GENEROS.map((genero, index) => { return <p key={index} className='text-[8px] bg-primary p-1 rounded-md text-secondary-a mt-1'>{genero}</p> })
+                                        }
                                     </div>
                                 </section>
                             </article>

@@ -1,4 +1,4 @@
-import { collection, addDoc, getFirestore, getDocs, doc, deleteDoc, getDoc} from 'firebase/firestore';
+import { collection, addDoc, getFirestore, getDocs, doc, deleteDoc, getDoc, updateDoc} from 'firebase/firestore';
 import app from '../hooks/AppFirebase';
 const db = getFirestore(app);
 
@@ -25,7 +25,13 @@ export const updateMovie = async (id, data) => {
 }
 
 export const deleteMovie = async (id) => {
-    console.log(id);
+    
+    try {
+        await deleteDoc(doc(db, "movies", id));
+        return true;
+    } catch (error) {
+        return false;
+    }
 
 }
 

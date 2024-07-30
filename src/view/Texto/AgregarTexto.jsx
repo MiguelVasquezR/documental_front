@@ -12,15 +12,16 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 const storage = getStorage(appFirebase);
 
 import BotonCargando from '../../component/Loaders/BotonCargando/BotonCargando';
-import IsLogin from '../../hooks/IsLogin';
+
+
+
+import { handleUploadImage, PORTADAS_LIBROS } from '../../FirebaseService/StorageService';
+import { addText } from '../../FirebaseService/TextService';
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 
 const AgregarTexto = () => {
-    useEffect(()=>{
-        if(!IsLogin){
-            navigate('/login');
-        }
-    }, [])
+
 
     const stylesInputs = "border-b-[1px] w-[90%] p-1 outline-none";
     const { register, handleSubmit } = useForm();
@@ -35,81 +36,17 @@ const AgregarTexto = () => {
 
     const [btnBloqueado, setBtnBloqueado] = useState(false);
 
-    const handleUploadImage = async (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setLoading(true);
-
-        const file = e.target.files[0];
-        const refArchivo = ref(storage, `portadasTextos/${file.name}`)
-        await uploadBytes(refArchivo, file)
-        const ulrImDesc = await getDownloadURL(refArchivo)
-
-        setDataImage(ulrImDesc);
-        setText("Cargado");
-
-    }
-
-    const handleSave = async (data) => {
-        setBtnBloqueado(true);
-
-        if (location === null) {
-            return;
-        }
-
-        if (!dataImage || dataImage === undefined) {
-            console.log('No se ha ejecutado el handleSave');
-            setBtnBloqueado(false);
-            return;
-        }
-
-        setIsLoading(true);
-
-        try {
-
-            const imageData = {
-                LinkFoto: dataImage
-            };
-
-            const { data: { ID: IDFoto } } = await axios.post(`http://${import.meta.env.VITE_IP}/foto/crear`, imageData);
-
-            const dataAutor = {
-                Nombre: data.Nombre,
-                Paterno: data.Paterno,
-                Materno: data.Materno
-            };
-            const { data: { IDAutor } } = await axios.post(`http://${import.meta.env.VITE_IP}/autor/crear`, dataAutor);
-
-            const dataLibro = {
-                Codigo: data.Codigo,
-                Disponibilidad: "Disponible",
-                Titulo: data.Titulo,
-                NumPaginas: data.NumPaginas,
-                Tipo: data.Tipo,
-                Ano: data.Ano,
-                Resena: data.Resena,
-                IDAutor,
-                LinkFoto: IDFoto,
-                Ubicacion: location
-            };
-            const { data: { mensaje } } = await axios.post(`http://${import.meta.env.VITE_IP}/texto/crear`, dataLibro);
-
-            if (mensaje === "Texto creado") {
-                navigate('/texto');
-            } else if (mensaje === 'Codigo Existente') {
-                setIsLoading(false);
-                setBtnBloqueado(false);
-                setCodeRepeat(true);
+    useEffect(() => {
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
             }
-            else {
-                console.log('No se ha creado el libro');
-            }
-        } catch (error) {
-            console.error('Error al ejecutar handleSave:', error);
         }
+        );
+    })
 
-        window.localStorage.removeItem('portada');
-    };
+
+
 
     const handleLocation = (repisa, fila, columna) => {
         if (repisa && fila && columna && repisa !== '') {
@@ -123,13 +60,41 @@ const AgregarTexto = () => {
         if (e.target.value.length > max) { e.target.value = e.target.value.slice(0, max); }
     }
 
+    const validatedData = async (data) => {
+        const dataSend = {
+            Codigo: data.Codigo,
+            Titulo: data.Titulo,
+            NumPaginas: data.NumPaginas,
+            Tipo: data.Tipo,
+            Ano: data.Ano,
+            Resena: data.Resena,
+            Ubicacion: location,
+            Portada: dataImage,
+            AUTOR: {
+                NOMBRE: data?.Nombre,
+                PATERNO: data?.Paterno,
+                MATERNO: data?.Materno,
+            }
+        }
+
+        const res = await addText(dataSend);
+        if (res) {
+            navigate('/texto');
+        } else {
+            alert('Error al guardar el texto');
+        }
+    }
+
+
+
 
     return (
         <>
             <Header />
-            <div className='w-[90%] mx-auto my-4 flex flex-row justify-center items-center gap-5'>
-                {dataImage ? <img className='w-[100px] h-[150px] rounded-sm' src={dataImage} /> : <div className='bg-[#f2f2f2] w-[100px] h-[150px] rounded-sm border-solid border-[1px] border-[#000]'></div>}
-                <input name="image" type="file" onChange={handleUploadImage} style={{ display: 'none' }} ref={fileInputRef} />
+
+            <div className='w-[90%] mx-auto my-4 flex flex-col justify-center items-center gap-5'>
+                {dataImage ? <img className='w-[200px] h-[250px] rounded-sm' src={dataImage} /> : <div className='bg-[#f2f2f2] w-[100px] h-[150px] rounded-sm border-solid border-[1px] border-[#000]'></div>}
+                <input name="image" type="file" onChange={async (e) => { setLoading(true); setDataImage(await handleUploadImage(e, PORTADAS_LIBROS)); setText("Cargado") }} style={{ display: 'none' }} ref={fileInputRef} />
                 <div className='flex flex-col items-center justify-center gap-3'>
                     {
                         loading ? <BotonCargando text={text} /> : <button className='bg-primary text-secondary-a p-2 rounded-md w-[180px]' onClick={(e) => { e.preventDefault(); fileInputRef.current.click() }}>Seleccionar Portada</button>
@@ -137,14 +102,14 @@ const AgregarTexto = () => {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit(handleSave)} className='w-[90%] mx-auto flex flex-col justify-center items-center gap-4'>
+            <form onSubmit={handleSubmit(validatedData)} className='w-[70%] h-full flex flex-col items-center justify-center gap-4 mx-auto'>
 
                 <fieldset className='flex flex-col justify-center items-center gap-4 w-[90%]'>
                     <legend className='p-3 text-lg font-bold'>Información del Libro</legend>
                     <input {...register("Codigo", { required: true })} type="text" placeholder='Código' className={`${stylesInputs}`} />
                     <input {...register("Titulo", { required: true })} type="text" placeholder='Titulo' className={`${stylesInputs}`} />
                     <input {...register("NumPaginas", { required: true })} type="number" placeholder='Número de Páginas' className={`${stylesInputs}`} onInput={(e) => { handleContadorCaracteres(e, 6) }} />
-                    <input {...register("Tipo", { required: true })} type="text" placeholder='Tipo' className={`${stylesInputs}`} />
+                    <input {...register("Tipo", { required: true })} type="text" placeholder='Tipo - Literatura Mexicana, Tesis, etc.' className={`${stylesInputs}`} />
                     <input {...register("Ano", { required: true })} onInput={(e) => { handleContadorCaracteres(e, 4) }} type="number" placeholder='Año' className={`${stylesInputs}`} />
                 </fieldset>
 
@@ -174,6 +139,8 @@ const AgregarTexto = () => {
                 }
 
             </form>
+
+
 
         </>
     )

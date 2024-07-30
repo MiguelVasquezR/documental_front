@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { handleUploadImage, PORTADAS_PELICULAS } from '../../FirebaseService/StorageService';
 import { addMovie } from '../../FirebaseService/MovieService'
 
+import { IsLogin } from '../../FirebaseService/AuthService';
 
 
 const AgregarPelicula = () => {
@@ -22,6 +23,15 @@ const AgregarPelicula = () => {
     const [generos, setGeneros] = useState([]);
     const navigate = useNavigate();
     const [btnBloqueado, setBtnBloqueado] = useState(false);
+
+    useEffect(() => {
+        IsLogin().then((res) => {
+            if (!res) { 
+                navigate('/login');
+            }
+        }
+        );
+    })
 
     const handleAddGenero = () => {
         setGeneros([...generos, ""]);

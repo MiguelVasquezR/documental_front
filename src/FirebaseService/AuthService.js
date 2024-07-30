@@ -4,6 +4,37 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
 const auth = getAuth(app);
 
 
+export const IsLogin = async () => {
+    const user = auth.currentUser;
+    if(user){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+export const getUsersAuth = async () => {
+    console.log("entro a getUsersAuth");
+    try {
+        const users = auth.currentUser
+        console.log("usuarios" + users.email);
+        return users;
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
+export const logOut = async () => {
+    try {
+        await auth.signOut();
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+
 export const createAccount = async (data) => {
     try {
         const create = await createUserWithEmailAndPassword(auth, data.usuario, data.password);

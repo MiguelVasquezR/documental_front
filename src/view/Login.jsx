@@ -17,7 +17,6 @@ const Login = () => {
     const onSubmit = async(data) => {
         try {
             if(login(data)){
-                localStorage.setItem('usuario', "valido");
                 navigate('/');
             }else{
                 setError(true);
